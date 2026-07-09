@@ -1,0 +1,855 @@
+<title>강지완 · AI Engineer — Agent / RAG / LLM</title>
+<style>
+  :root{
+    --bg:#f6f8fb; --surface:#ffffff; --surface-2:#eef2f7; --surface-3:#e6ecf3;
+    --ink:#0e1720; --ink-2:#26333f; --muted:#5c6b7a; --faint:#8a99a8;
+    --line:#dbe3ec; --line-strong:#c6d1dc;
+    --signal:#0d8f81; --signal-bright:#12b3a1; --signal-dim:#0d8f8122;
+    --good:#15803d; --warn:#b45309; --crit:#b91c1c;
+    --good-bg:#15803d18; --warn-bg:#b4530918; --crit-bg:#b91c1c18;
+    --mono: ui-monospace, "SFMono-Regular", "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Noto Sans KR", Roboto, "Apple SD Gothic Neo", sans-serif;
+    --maxw:1080px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0a0e13; --surface:#111924; --surface-2:#0e1620; --surface-3:#16212e;
+      --ink:#e7eff7; --ink-2:#c2cfdb; --muted:#8ea0b2; --faint:#5f7080;
+      --line:#1d2a38; --line-strong:#28394b;
+      --signal:#2dd4bf; --signal-bright:#5eead4; --signal-dim:#2dd4bf1f;
+      --good:#4ade80; --warn:#fbbf24; --crit:#f87171;
+      --good-bg:#4ade8018; --warn-bg:#fbbf2418; --crit-bg:#f8717118;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f6f8fb; --surface:#ffffff; --surface-2:#eef2f7; --surface-3:#e6ecf3;
+    --ink:#0e1720; --ink-2:#26333f; --muted:#5c6b7a; --faint:#8a99a8;
+    --line:#dbe3ec; --line-strong:#c6d1dc;
+    --signal:#0d8f81; --signal-bright:#12b3a1; --signal-dim:#0d8f8122;
+    --good:#15803d; --warn:#b45309; --crit:#b91c1c;
+    --good-bg:#15803d18; --warn-bg:#b4530918; --crit-bg:#b91c1c18;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0a0e13; --surface:#111924; --surface-2:#0e1620; --surface-3:#16212e;
+    --ink:#e7eff7; --ink-2:#c2cfdb; --muted:#8ea0b2; --faint:#5f7080;
+    --line:#1d2a38; --line-strong:#28394b;
+    --signal:#2dd4bf; --signal-bright:#5eead4; --signal-dim:#2dd4bf1f;
+    --good:#4ade80; --warn:#fbbf24; --crit:#f87171;
+    --good-bg:#4ade8018; --warn-bg:#fbbf2418; --crit-bg:#f8717118;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); line-height:1.65;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    font-size:16px;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+  a{color:inherit}
+  h1,h2,h3{text-wrap:balance; line-height:1.15; margin:0}
+
+  /* ---- mono utility labels ---- */
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--signal); font-weight:600;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:""; width:22px; height:1px; background:var(--signal); opacity:.7}
+  .num{font-variant-numeric:tabular-nums; font-family:var(--mono)}
+
+  /* ---- top nav ---- */
+  nav.top{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.top .row{display:flex; align-items:center; justify-content:space-between; height:56px}
+  nav.top .brand{font-family:var(--mono); font-weight:700; letter-spacing:.02em; font-size:14px}
+  nav.top .brand b{color:var(--signal)}
+  nav.top .links{display:flex; gap:22px; align-items:center}
+  nav.top .links a{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; text-decoration:none;
+    color:var(--muted); transition:color .15s;
+  }
+  nav.top .links a:hover{color:var(--ink)}
+  .themebtn{
+    font-family:var(--mono); font-size:12px; color:var(--muted); background:var(--surface-2);
+    border:1px solid var(--line); border-radius:6px; padding:5px 9px; cursor:pointer;
+  }
+  .themebtn:hover{color:var(--ink); border-color:var(--line-strong)}
+  @media (max-width:720px){ nav.top .links a.sec{display:none} }
+
+  /* ---- hero ---- */
+  header.hero{padding:80px 0 40px; position:relative; overflow:hidden}
+  header.hero .grid-bg{
+    position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 70%);
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 70%);
+  }
+  header.hero .inner{position:relative}
+  .hero h1{
+    font-size:clamp(38px, 7vw, 68px); font-weight:800; letter-spacing:-.02em; margin:18px 0 0;
+  }
+  .hero h1 .ko{color:var(--ink)}
+  .hero .role{
+    font-family:var(--mono); font-size:clamp(14px,2.4vw,18px); color:var(--signal);
+    margin-top:14px; font-weight:600; letter-spacing:.02em;
+  }
+  .hero .lede{
+    max-width:60ch; color:var(--ink-2); font-size:clamp(16px,2.2vw,19px); margin-top:20px;
+  }
+  .hero .lede b{color:var(--ink); font-weight:700}
+  .hero .cta{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap}
+  .btn{
+    font-family:var(--mono); font-size:13px; text-decoration:none; padding:10px 16px; border-radius:8px;
+    border:1px solid var(--line-strong); color:var(--ink); background:var(--surface);
+    display:inline-flex; align-items:center; gap:8px; transition:.15s;
+  }
+  .btn:hover{border-color:var(--signal); color:var(--signal)}
+  .btn.primary{background:var(--signal); color:#fff; border-color:var(--signal)}
+  :root[data-theme="dark"] .btn.primary{color:#04211d}
+  @media (prefers-color-scheme:dark){ .btn.primary{color:#04211d} }
+  .btn.primary:hover{background:var(--signal-bright); border-color:var(--signal-bright); color:#04211d}
+
+  /* ---- telemetry strip ---- */
+  .telemetry{
+    margin-top:44px; border:1px solid var(--line); border-radius:12px; background:var(--surface);
+    display:grid; grid-template-columns:repeat(5,1fr); overflow:hidden;
+  }
+  .telemetry .cell{padding:16px 18px; border-right:1px solid var(--line)}
+  .telemetry .cell:last-child{border-right:none}
+  .telemetry .k{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); display:flex; align-items:center; gap:6px}
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--signal); box-shadow:0 0 0 0 var(--signal-dim)}
+  @media (prefers-reduced-motion:no-preference){ .dot.live{animation:pulse 2.2s infinite} }
+  @keyframes pulse{0%{box-shadow:0 0 0 0 var(--signal-dim)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .telemetry .v{font-family:var(--mono); font-size:clamp(20px,3vw,27px); font-weight:700; margin-top:8px; font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+  .telemetry .s{font-size:12px; color:var(--muted); margin-top:2px}
+  @media (max-width:860px){ .telemetry{grid-template-columns:repeat(2,1fr)} .telemetry .cell:nth-child(2){border-right:none} .telemetry .cell{border-bottom:1px solid var(--line)} }
+  @media (max-width:480px){ .telemetry{grid-template-columns:1fr} .telemetry .cell{border-right:none} }
+
+  /* ---- sections ---- */
+  section{padding:64px 0; border-top:1px solid var(--line)}
+  .sec-head{margin-bottom:34px}
+  .sec-head h2{font-size:clamp(24px,4vw,34px); font-weight:800; letter-spacing:-.015em; margin-top:12px}
+  .sec-head p{color:var(--muted); margin:12px 0 0; max-width:64ch}
+
+  .prose{color:var(--ink-2); max-width:68ch}
+  .prose b{color:var(--ink)}
+
+  /* ---- flagship project ---- */
+  .flag{border:1px solid var(--line); border-radius:16px; background:var(--surface); overflow:hidden}
+  .flag .band{padding:24px 26px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, var(--surface-2), var(--surface))}
+  .flag .band .title{display:flex; flex-wrap:wrap; align-items:baseline; gap:12px}
+  .flag .band h3{font-size:clamp(20px,3vw,26px); font-weight:800}
+  .flag .band .meta{font-family:var(--mono); font-size:12px; color:var(--muted)}
+  .flag .body{padding:26px}
+  .tagrow{display:flex; flex-wrap:wrap; gap:7px; margin-top:14px}
+  .tag{font-family:var(--mono); font-size:11.5px; padding:4px 9px; border-radius:20px; border:1px solid var(--line-strong); color:var(--muted); background:var(--surface)}
+  .tag.sig{color:var(--signal); border-color:var(--signal); background:var(--signal-dim)}
+
+  .metric-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:22px 0 6px}
+  @media (max-width:760px){ .metric-grid{grid-template-columns:repeat(2,1fr)} }
+  .metric{border:1px solid var(--line); border-radius:10px; padding:14px 15px; background:var(--surface-2)}
+  .metric .k{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint)}
+  .metric .v{font-family:var(--mono); font-size:24px; font-weight:700; margin-top:8px; font-variant-numeric:tabular-nums}
+  .metric .v small{font-size:14px; color:var(--muted); font-weight:600}
+  .metric .d{font-size:12px; color:var(--muted); margin-top:3px}
+  .metric.up .v{color:var(--good)} .metric.flat .v{color:var(--signal)}
+
+  .callout{
+    border-left:3px solid var(--signal); background:var(--signal-dim); border-radius:0 10px 10px 0;
+    padding:16px 18px; margin:22px 0; color:var(--ink-2);
+  }
+  .callout b{color:var(--ink)}
+
+  /* ---- comparison table ---- */
+  .tbl-scroll{overflow-x:auto; margin-top:20px; border:1px solid var(--line); border-radius:10px}
+  table.cmp{border-collapse:collapse; width:100%; min-width:520px; font-size:14px}
+  table.cmp th, table.cmp td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--line)}
+  table.cmp thead th{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); background:var(--surface-2)}
+  table.cmp tbody th{font-family:var(--mono); font-weight:700; color:var(--ink); white-space:nowrap}
+  table.cmp td{font-variant-numeric:tabular-nums; font-family:var(--mono); color:var(--ink-2)}
+  table.cmp tr:last-child td, table.cmp tr:last-child th{border-bottom:none}
+  .best{color:var(--good); font-weight:700}
+  .win{display:inline-block; margin-left:6px; font-size:10px; color:var(--good)}
+
+  /* ---- project cards ---- */
+  .cards{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+  @media (max-width:760px){ .cards{grid-template-columns:1fr} }
+  .card{border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:22px; display:flex; flex-direction:column; transition:border-color .15s, transform .15s}
+  .card:hover{border-color:var(--line-strong)}
+  .card h3{font-size:18px; font-weight:800; display:flex; align-items:center; gap:9px}
+  .card .kind{font-family:var(--mono); font-size:11px; color:var(--signal); letter-spacing:.05em; text-transform:uppercase}
+  .card p{color:var(--ink-2); font-size:14.5px; margin:10px 0 0}
+  .card ul{margin:14px 0 0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:7px}
+  .card ul li{position:relative; padding-left:18px; font-size:13.5px; color:var(--muted)}
+  .card ul li::before{content:"›"; position:absolute; left:2px; color:var(--signal); font-family:var(--mono)}
+  .card .foot{margin-top:auto; padding-top:16px}
+
+  /* ---- compact list ---- */
+  .mini{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  @media (max-width:680px){ .mini{grid-template-columns:1fr} }
+  .mini .row{border:1px solid var(--line); border-radius:10px; padding:14px 16px; background:var(--surface)}
+  .mini .row .h{display:flex; justify-content:space-between; gap:10px; align-items:baseline}
+  .mini .row .t{font-weight:700; font-size:15px}
+  .mini .row .yr{font-family:var(--mono); font-size:11px; color:var(--faint); white-space:nowrap}
+  .mini .row p{margin:6px 0 0; font-size:13px; color:var(--muted)}
+
+  /* ---- skills matrix ---- */
+  .skills{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+  @media (max-width:820px){ .skills{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:460px){ .skills{grid-template-columns:1fr} }
+  .skcol h4{font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--signal); margin:0 0 12px; padding-bottom:8px; border-bottom:1px solid var(--line)}
+  .skcol ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px}
+  .skcol li{font-size:14px; color:var(--ink-2)}
+  .skcol li span{font-family:var(--mono); font-size:11px; color:var(--faint); display:block}
+
+  /* ---- demo ---- */
+  .demo{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--surface)}
+  .demo .head{padding:18px 22px; border-bottom:1px solid var(--line); background:var(--surface-2); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px}
+  .demo .head .t{font-family:var(--mono); font-size:13px; font-weight:700}
+  .demo .head .t b{color:var(--signal)}
+  .demo .head .snap{font-family:var(--mono); font-size:11px; color:var(--faint)}
+  .demo .controls{padding:18px 22px; display:flex; flex-direction:column; gap:14px; border-bottom:1px solid var(--line)}
+  .demo input[type=text]{
+    width:100%; padding:12px 14px; border-radius:9px; border:1px solid var(--line-strong);
+    background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15px;
+  }
+  .demo input[type=text]:focus{outline:2px solid var(--signal); outline-offset:1px; border-color:var(--signal)}
+  .chips{display:flex; flex-wrap:wrap; gap:7px; align-items:center}
+  .chip{
+    font-family:var(--mono); font-size:12px; padding:6px 11px; border-radius:20px; cursor:pointer;
+    border:1px solid var(--line-strong); background:var(--surface); color:var(--muted); user-select:none; transition:.12s;
+  }
+  .chip:hover{border-color:var(--signal); color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--signal); color:#04211d; border-color:var(--signal)}
+  :root[data-theme="light"] .chip[aria-pressed="true"]{color:#fff}
+  .toggle{display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px; color:var(--muted); cursor:pointer}
+  .toggle input{accent-color:var(--signal); width:15px; height:15px}
+  .demo .stat{font-family:var(--mono); font-size:12px; color:var(--muted); padding:12px 22px 0}
+  .demo .stat b{color:var(--signal)}
+  .results{padding:12px 22px 22px; display:grid; grid-template-columns:1fr 1fr; gap:12px; max-height:560px; overflow-y:auto}
+  @media (max-width:720px){ .results{grid-template-columns:1fr} }
+  .sch{border:1px solid var(--line); border-radius:11px; padding:15px 16px; background:var(--surface-2)}
+  .sch .top{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
+  .sch .name{font-weight:700; font-size:15px; line-height:1.3}
+  .sch .org{font-size:12.5px; color:var(--muted); margin-top:3px}
+  .pill{font-family:var(--mono); font-size:10.5px; padding:3px 8px; border-radius:20px; white-space:nowrap; font-weight:600}
+  .pill.open{color:var(--good); background:var(--good-bg)}
+  .pill.soon{color:var(--warn); background:var(--warn-bg)}
+  .pill.closed{color:var(--crit); background:var(--crit-bg)}
+  .pill.always{color:var(--signal); background:var(--signal-dim)}
+  .sch .facets{display:flex; flex-wrap:wrap; gap:6px; margin-top:11px}
+  .sch .f{font-family:var(--mono); font-size:10.5px; padding:2px 7px; border-radius:5px; background:var(--surface-3); color:var(--muted)}
+  .sch .ex{font-size:12.5px; color:var(--ink-2); margin-top:11px; line-height:1.55; max-height:4.7em; overflow:hidden}
+  .sch .src{margin-top:11px; display:flex; justify-content:space-between; align-items:center; font-family:var(--mono); font-size:11px}
+  .sch .src .dates{color:var(--faint); font-variant-numeric:tabular-nums}
+  .sch .src a{color:var(--signal); text-decoration:none}
+  .sch .src a:hover{text-decoration:underline}
+  .empty{grid-column:1/-1; text-align:center; color:var(--muted); font-family:var(--mono); font-size:13px; padding:34px}
+  .demo .foot{padding:14px 22px; border-top:1px solid var(--line); font-size:12px; color:var(--faint)}
+
+  /* ---- contact ---- */
+  .contact{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media (max-width:640px){ .contact{grid-template-columns:1fr} }
+  .contact a{
+    border:1px solid var(--line); border-radius:11px; padding:16px 18px; text-decoration:none;
+    display:flex; justify-content:space-between; align-items:center; background:var(--surface); transition:.15s;
+  }
+  .contact a:hover{border-color:var(--signal)}
+  .contact .l{font-family:var(--mono); font-size:11px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em}
+  .contact .v{font-weight:700; margin-top:4px; font-size:15px}
+  .contact .arw{color:var(--signal); font-family:var(--mono)}
+
+  footer{border-top:1px solid var(--line); padding:34px 0 60px; color:var(--faint); font-family:var(--mono); font-size:12px}
+  footer .r{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+
+  .reveal{opacity:0; transform:translateY(14px)}
+  @media (prefers-reduced-motion:reduce){ .reveal{opacity:1; transform:none} }
+  .reveal.in{opacity:1; transform:none; transition:opacity .6s ease, transform .6s ease}
+  .verdict{font-family:var(--mono); font-weight:700; font-size:12px}
+  .verdict.ok{color:var(--good)}
+  .verdict.no{color:var(--crit)}
+  #cstat, #cssrf{font-family:var(--mono); line-height:1.5}
+  .livecta{display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12.5px; text-decoration:none; padding:8px 13px; border-radius:8px; border:1px solid var(--signal); color:var(--signal); background:var(--signal-dim); transition:.15s}
+  .livecta:hover{background:var(--signal); color:#04211d}
+  .livecta:hover .dot{background:currentColor}
+  :root[data-theme="light"] .livecta:hover{color:#fff}
+  .ctarow{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:16px}
+  .ctanote{font-family:var(--mono); font-size:11.5px; color:var(--faint)}
+</style>
+
+<nav class="top">
+  <div class="wrap row">
+    <div class="brand">강지완 <b>·</b> <span class="num">AI_ENG</span></div>
+    <div class="links">
+      <a class="sec" href="#about">about</a>
+      <a class="sec" href="#flagship">똑소리</a>
+      <a class="sec" href="#mcp">mcp_servers</a>
+      <a class="sec" href="#skills">skills</a>
+      <a class="sec" href="#demo">rag_demo</a>
+      <a class="sec" href="#demo2">chatd_demo</a>
+      <a class="sec" href="#contact">contact</a>
+      <button class="themebtn" id="themebtn" aria-label="테마 전환">◐ theme</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="grid-bg"></div>
+  <div class="wrap inner">
+    <span class="eyebrow">AI Engineer · Agent / RAG / LLM Systems</span>
+    <h1><span class="ko">강지완</span> <span style="color:var(--muted); font-weight:300">Jiwan&nbsp;Kang</span></h1>
+    <div class="role">Agent · RAG · LLM 시스템을 <span style="color:var(--ink)">만들고, 측정하고, 근거로 판단합니다</span></div>
+    <p class="lede">좋은 AI 서비스는 좋은 모델이 아니라 <b>문제에 맞는 구조 설계</b>에서 나온다고 믿습니다.
+      멀티 에이전트 챗봇을 만든 뒤, <b>"이 구조가 정말 최선이었나"</b>를 스스로 검증하려 서로 다른 아키텍처를 동일 조건에서
+      측정·비교하는 시스템까지 구축했습니다.</p>
+    <div class="cta">
+      <a class="btn primary" href="#flagship">측정 시스템 보기 →</a>
+      <a class="btn" href="https://github.com/Maroco0109" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="#demo">라이브 데모 ▸</a>
+    </div>
+
+    <div class="telemetry" aria-label="대표 지표">
+      <div class="cell">
+        <div class="k"><span class="dot live"></span>검색 품질</div>
+        <div class="v" data-count="0.88" data-dec="2">0.88</div>
+        <div class="s">nDCG@10 (구조 A, 최고치)</div>
+      </div>
+      <div class="cell">
+        <div class="k"><span class="dot live"></span>응답 지연</div>
+        <div class="v">−80<small style="font-size:16px">%</small></div>
+        <div class="s">60s→10s · 규칙기반+병렬화</div>
+      </div>
+      <div class="cell">
+        <div class="k"><span class="dot live"></span>보안 누출</div>
+        <div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div>
+        <div class="s">leak_rate (프롬프트·PII)</div>
+      </div>
+      <div class="cell">
+        <div class="k"><span class="dot live"></span>라우팅 검증</div>
+        <div class="v" data-count="100" data-dec="0" data-suffix="%">100%</div>
+        <div class="s">A vs A-hub 결정 일치</div>
+      </div>
+      <div class="cell">
+        <div class="k"><span class="dot live"></span>산출물</div>
+        <div class="v"><span class="num">7</span><small> 프로젝트</small></div>
+        <div class="s">+ MCP 서버 2종 PlayMCP 라이브</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">01 · About</span>
+      <h2>기술을 만드는 사람을 넘어, 문제를 구조화하는 사람</h2>
+    </div>
+    <p class="prose">비정형 데이터 처리·파이프라인 설계, RAG 시스템과 LangGraph 기반 멀티 에이전트 시스템 구현을 경험했습니다.
+      같은 기술이라도 <b>도메인에 따라 적용 방식이 달라져야 한다</b>는 것을 프로젝트마다 체득했고,
+      최근에는 아키텍처 선택을 정성적 주장이 아니라 <b>측정된 숫자</b>로 증명하는 데 집중하고 있습니다.
+      "AI를 도입하자"가 아니라 <b>"이 방식이 이만큼 낫다"</b>를 근거와 함께 제시하는 것 — 그게 제가 일하는 방식입니다.</p>
+    <div class="tagrow">
+      <span class="tag sig">LangGraph MAS</span>
+      <span class="tag sig">RAG · pgvector</span>
+      <span class="tag sig">A/B 측정 · 관측성</span>
+      <span class="tag">LLM 보안 · 가드레일</span>
+      <span class="tag">MCP 서버</span>
+      <span class="tag">PLM 파인튜닝 · ONNX</span>
+      <span class="tag">CI/CD · AWS · Docker</span>
+      <span class="tag">홍익대 컴퓨터공학 학사</span>
+    </div>
+  </div>
+</section>
+
+<section id="flagship">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">02 · Flagship</span>
+      <h2>똑소리 — 만든 뒤, 측정한 챗봇</h2>
+      <p>소비자 분쟁조정 상담 챗봇(팀 5인, 2025.12~2026.02). 팀 단계에서 멀티 에이전트 RAG를 구축한 뒤,
+        개인 심화에서 <b>결정론 워크플로우(A)·자율 ReAct 에이전트(B)·LLM 라우팅(A-hub)</b>을 같은 백엔드에서 측정·비교했습니다.</p>
+    </div>
+
+    <div class="flag">
+      <div class="band">
+        <div class="title">
+          <h3>똑소리 · Agent/RAG/LLM 측정·비교 시스템</h3>
+          <span class="meta">LangGraph · pgvector · Prometheus · Grafana · RunPod/vLLM</span>
+        </div>
+        <div class="tagrow">
+          <span class="tag sig">Hub-Spoke MAS</span>
+          <span class="tag sig">Fan-out/Fan-in 병렬검색</span>
+          <span class="tag">Upstage 3단계 청킹</span>
+          <span class="tag">Input/Output 가드레일</span>
+          <span class="tag">PII 마스킹</span>
+          <span class="tag">OWASP CI 리뷰</span>
+          <span class="tag">EXAONE 4.5-33B 자체호스팅</span>
+        </div>
+      </div>
+      <div class="body">
+        <div class="callout"><b>인지 → 개선.</b> 팀 단계에선 "MAS가 정말 MAS로 동작하는가"를 검증할 측정 수단이 없었습니다.
+          개인 심화에서 서로 다른 아키텍처를 <b>동일 조건에서 측정·모니터링하는 시스템</b>으로 발전시켜, 포트폴리오 가치를 숫자로 증명했습니다.</div>
+
+        <div class="metric-grid">
+          <div class="metric up"><div class="k">응답 지연</div><div class="v">60s→10s</div><div class="d">에이전트 LLM추론→규칙기반 + Fan-out/in 병렬검색, −80%</div></div>
+          <div class="metric flat"><div class="k">nDCG@10 (A)</div><div class="v" data-count="0.88" data-dec="2">0.88</div><div class="d">B-frontier 0.71 / B-exaone 0.55</div></div>
+          <div class="metric flat"><div class="k">safety pass (A)</div><div class="v" data-count="1.00" data-dec="2">1.00</div><div class="d">B-frontier 0.83 / B-exaone 0.78</div></div>
+          <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">3종 전부 시스템프롬프트·PII 0%</div></div>
+        </div>
+
+        <p class="prose" style="margin-top:22px">측정 백본은 직접 구축했습니다. 요청 단위로 <b>DB 5테이블</b>(runs·steps·retrieval·llm_calls·guardrail)에
+          적재해 A/B를 SQL로 비교하고, <b>Prometheus /metrics</b>(variant 라벨) + <b>Grafana 대시보드</b>로 p95 지연·에러율·가드레일 차단율을 실시간 관측했습니다.</p>
+
+        <div class="tbl-scroll">
+          <table class="cmp">
+            <thead>
+              <tr><th>지표</th><th>A · 결정론</th><th>B · ReAct agent</th><th>A-hub · LLM 라우팅</th></tr>
+            </thead>
+            <tbody>
+              <tr><th>검색 nDCG@10</th><td class="best">0.88 <span class="win">▲</span></td><td>0.71</td><td>—</td></tr>
+              <tr><th>답변 faithfulness</th><td class="best">2.00 <span class="win">▲</span></td><td>1.92</td><td>—</td></tr>
+              <tr><th>지연 median</th><td>10.2s</td><td class="best">6.4s <span class="win">▲</span></td><td>18.9s</td></tr>
+              <tr><th>보안 decided pass</th><td class="best">100% <span class="win">▲</span></td><td>96.0%</td><td>—</td></tr>
+              <tr><th>라우팅 결정 일치</th><td>기준</td><td>—</td><td>100% (+74% 지연)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout" style="margin-bottom:0"><b>결론 — "agentic이 항상 정답은 아니다"를 데이터로 증명.</b>
+          도메인 핵심 축(안전·보안·충실성·검색 랭킹)은 A(결정론)가, 속도·유연성은 B(agent)가 우세.
+          A-hub 측정으로 "선형 파이프라인에서 LLM 라우팅은 결정을 100% 재현하면서 지연만 +74%"임을 확인해 A 동결의 정당성을 입증했습니다.
+          <span style="color:var(--muted)">(Anthropic "Building Effective Agents"의 workflow vs agent 교훈과 일치.)</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mcp">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">03 · MCP Servers</span>
+      <h2>프로덕션 MCP 서버 2종 (개인)</h2>
+      <p>떠오르는 <b>MCP 기반 에이전트 생태계</b>를 직접 이해하려 카카오 PlayMCP용 원격 MCP 서버를 혼자 설계·구현했습니다.
+        TypeScript + <span class="num">@modelcontextprotocol/sdk</span> + Express, Streamable HTTP(stateless). <b>둘 다 카카오 PlayMCP에 라이브 등록</b>되어 실제 카카오 AI 채팅에서 동작합니다.</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <span class="kind">RAG · 공공데이터 · read-only</span>
+        <h3>who-will-notify</h3>
+        <p>한국장학재단·공공데이터포털의 장학금 공고 약 1,000건을 컨텍스트화해, 자연어 질문에 <b>출처와 함께</b> 답하는 MCP 서버.
+          지어내지 않고 실데이터에만 근거합니다.</p>
+        <ul>
+          <li>repo-as-DB + GitHub Actions 주간 크론 동기화</li>
+          <li>안전 게이트: 에러봉투 reject · 완전성 검증 · 크기 상한</li>
+          <li>런타임 fetch 실패 시 이미지 베이크 <b>stale-serve 폴백</b></li>
+          <li>serviceKey 키 격리(런타임 서버엔 키 불필요)</li>
+        </ul>
+        <div class="foot" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+          <a class="livecta" href="https://playmcp.kakao.com/mcp/67984437027092378" target="_blank" rel="noopener"><span class="dot live"></span>PlayMCP 라이브 ↗</a>
+          <span class="tag sig">데모 데이터 소스 ↓</span>
+        </div>
+      </div>
+      <div class="card">
+        <span class="kind">Persona · 도구 · security</span>
+        <h3>Giga ChatD</h3>
+        <p>메모·일정·URL을 관리하는 페르소나형 MCP 서버. 호스트가 지시문을 무시해도 페르소나를 유지하도록 2갈래 주입 설계.</p>
+        <ul>
+          <li><b>SSRF 가드</b>: http/https만 허용, 사설·루프백·링크로컬 IP 차단</li>
+          <li>리다이렉트 홉 수동 검증 · 응답 200KB·8초 제한</li>
+          <li>KST 자연어 일정 파싱(startAt 우선)</li>
+          <li>PlayMCP 규정 annotations(readOnly/destructive) 전 도구 정의</li>
+        </ul>
+        <div class="foot" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+          <a class="livecta" href="https://playmcp.kakao.com/mcp/67820257296853889" target="_blank" rel="noopener"><span class="dot live"></span>PlayMCP 라이브 ↗</a>
+          <span class="tag">TS · Express · SSRF</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="more">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">04 · More Work</span>
+      <h2>그 외 프로젝트</h2>
+      <p>NLP 기초부터 프로덕션 LLM 서비스까지 단계적으로 역량을 확장해 왔습니다.</p>
+    </div>
+    <div class="mini">
+      <div class="row"><div class="h"><span class="t">Unigo — 전공 추천 챗봇</span><span class="yr">2025.10–12</span></div><p>LangGraph ReAct 단일 에이전트 + RAG. MySQL(정형)·Pinecone(벡터) Dual-Store 설계, 학과 매핑 전략.</p></div>
+      <div class="row"><div class="h"><span class="t">SMS-Filtering — 한국어 PLM 비교</span><span class="yr">2024.09–2025.07</span></div><p>KoBERT·KoELECTRA·RoBERTa 파인튜닝 비교, F1 0.9997. ONNX INT8 양자화로 모바일 경량화.</p></div>
+      <div class="row"><div class="h"><span class="t">Malicious URL — 악성 URL 분석</span><span class="yr">2025.06–07</span></div><p>IDN/WHOIS/HTML·JS 다층 수집 + 단계별 점수 + LLM 앙상블 종합 판단 파이프라인.</p></div>
+      <div class="row"><div class="h"><span class="t">암 환자 생존 분석</span><span class="yr">2025.09</span></div><p>DeepHit 기반 경쟁위험 생존 분석, C-index 0.91. 과적합 진단 후 구조 재선택.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">05 · Skills</span>
+      <h2>기술 역량</h2>
+    </div>
+    <div class="skills">
+      <div class="skcol">
+        <h4>LLM / Agent</h4>
+        <ul>
+          <li>LangGraph <span>MAS·ReAct 설계, Fan-out/in</span></li>
+          <li>LangChain <span>도구 바인딩·상태관리</span></li>
+          <li>RAG <span>도메인별 검색 전략 분리</span></li>
+          <li>MCP <span>프로덕션 서버 2종</span></li>
+        </ul>
+      </div>
+      <div class="skcol">
+        <h4>Data / Model</h4>
+        <ul>
+          <li>pgvector <span>하이브리드 검색·RRF</span></li>
+          <li>Pinecone <span>Serverless Dual-Store</span></li>
+          <li>PLM 파인튜닝 <span>KoBERT/ELECTRA/RoBERTa</span></li>
+          <li>ONNX <span>INT8 양자화 경량화</span></li>
+        </ul>
+      </div>
+      <div class="skcol">
+        <h4>보안 / 측정</h4>
+        <ul>
+          <li>가드레일 <span>Moderation·프롬프트 인젝션</span></li>
+          <li>SSRF·PII <span>방어·자동 마스킹</span></li>
+          <li>OWASP CI <span>Claude 코드리뷰 자동화</span></li>
+          <li>관측성 <span>Prometheus·Grafana·LangSmith</span></li>
+        </ul>
+      </div>
+      <div class="skcol">
+        <h4>Infra / Lang</h4>
+        <ul>
+          <li>Python <span>7개 프로젝트 핵심</span></li>
+          <li>TypeScript <span>MCP 서버</span></li>
+          <li>Docker·AWS <span>Compose·EC2/RDS</span></li>
+          <li>GitHub Actions <span>CI/CD·크론</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">06 · Live Demo · RAG</span>
+      <h2>장학금 검색 — RAG 데이터 레이어</h2>
+      <p><b>who-will-notify</b>는 카카오 PlayMCP에 라이브로 떠 있어, 카카오 AI 채팅에서 자연어로 바로 물어볼 수 있습니다.
+        아래는 로그인 없이 체험하도록, 실제 공개데이터(공공누리 제1유형) 90건 스냅샷 위에서 검색·<b>facet 필터</b>·모집상태 로직을 브라우저에 재현한 미리보기입니다.</p>
+      <div class="ctarow">
+        <a class="livecta" href="https://playmcp.kakao.com/mcp/67984437027092378" target="_blank" rel="noopener"><span class="dot live"></span>카카오 PlayMCP에서 실제로 써보기 ↗</a>
+        <span class="ctanote">↓ 로그인 없는 브라우저 미리보기</span>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="head">
+        <div class="t"><b>find_scholarships</b>() · who-will-notify</div>
+        <div class="snap">snapshot · 기준일 2026-01-10 · n=<span id="total">90</span></div>
+      </div>
+      <div class="controls">
+        <input type="text" id="q" placeholder="검색: 반도체, 소득, 지역, 장애, 예체능, 성적…" autocomplete="off" aria-label="장학금 검색">
+        <div class="chips" id="cats" role="group" aria-label="유형 필터"></div>
+        <label class="toggle"><input type="checkbox" id="openonly"> 모집중만 보기</label>
+      </div>
+      <div class="stat" id="stat"></div>
+      <div class="results" id="results"></div>
+      <div class="foot">데이터: 한국장학재단 / 공공데이터포털 · 공공누리 제1유형(출처표시). 데모용 90건 스냅샷 · 원본 서버는 약 1,000건을 서빙.</div>
+    </div>
+  </div>
+</section>
+
+<section id="demo2">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">07 · Live Demo · Agent Tools</span>
+      <h2>Giga ChatD — 메모·일정 에이전트</h2>
+      <p><b>Giga ChatD</b>도 카카오 PlayMCP에 라이브입니다 — 카카오 AI 채팅에서 CHAD와 실제로 대화하며 메모·일정·URL을 관리할 수 있습니다.
+        아래는 로그인 없이 체험하도록, 서버의 자동 분류 규칙 · KST 일정 파싱 · SSRF 가드 로직을 그대로 브라우저에 재현한 미리보기입니다.</p>
+      <div class="ctarow">
+        <a class="livecta" href="https://playmcp.kakao.com/mcp/67820257296853889" target="_blank" rel="noopener"><span class="dot live"></span>카카오 PlayMCP에서 CHAD와 대화하기 ↗</a>
+        <span class="ctanote">↓ 로그인 없는 브라우저 미리보기</span>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="head">
+        <div class="t"><b>save_memo</b>() · Giga ChatD</div>
+        <div class="snap">persona: CHAD · 호칭: 삣삐</div>
+      </div>
+      <div class="controls">
+        <input type="text" id="cmemo" placeholder="예: 내일 오후 6시 저녁 약속 / 010-1234-5678 김대리 / https://openai.com" autocomplete="off" aria-label="메모 입력">
+        <div class="chips" id="cex" role="group" aria-label="예시"></div>
+      </div>
+      <div class="stat" id="cstat" style="min-height:20px">메모를 입력하고 Enter. CHAD가 분류해준다, 삣삐.</div>
+      <div class="results" id="cmemos"></div>
+      <div class="foot">자동 분류 우선순위: url › contact › file › place › schedule. 날짜+시각이 모두 잡히면 확정 일정으로 절대 시각(ISO)을 부여.</div>
+    </div>
+
+    <div class="demo" style="margin-top:18px">
+      <div class="head">
+        <div class="t"><b>analyze_url</b>() · SSRF 가드</div>
+        <div class="snap">http/https만 · 사설·루프백·링크로컬 IP 차단</div>
+      </div>
+      <div class="controls">
+        <input type="text" id="curl" placeholder="URL 검사: http://169.254.169.254/latest/meta-data" autocomplete="off" aria-label="URL 검사">
+        <div class="chips" id="curlex" role="group" aria-label="예시 URL"></div>
+      </div>
+      <div class="stat" id="cssrf" style="min-height:20px">URL을 넣어봐라, 삣삐. 공개 대상만 통과시킨다.</div>
+      <div class="foot">서버는 리다이렉트 각 홉을 다시 검증하고 호스트명은 DNS 해석 후 재확인합니다(브라우저 데모는 프로토콜·로컬 접미사·리터럴 IP까지 검사).</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">08 · Contact</span>
+      <h2>연락 · 링크</h2>
+    </div>
+    <div class="contact">
+      <a href="mailto:maroco1215@gmail.com"><span><span class="l">Email</span><span class="v">maroco1215@gmail.com</span></span><span class="arw">→</span></a>
+      <a href="https://github.com/Maroco0109" target="_blank" rel="noopener"><span><span class="l">GitHub</span><span class="v">github.com/Maroco0109</span></span><span class="arw">→</span></a>
+      <a href="https://github.com/SKN19-FINAL-5team/LLM" target="_blank" rel="noopener"><span><span class="l">똑소리 Repo</span><span class="v">SKN19-FINAL-5team / LLM</span></span><span class="arw">→</span></a>
+      <a href="https://www.linkedin.com/in/%EC%A7%80%EC%99%84-%EA%B0%95-335909375/" target="_blank" rel="noopener"><span><span class="l">LinkedIn</span><span class="v">지완 강</span></span><span class="arw">→</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap r">
+    <span>강지완 · Jiwan Kang — AI Engineer</span>
+    <span class="num">portfolio · 2026</span>
+  </div>
+</footer>
+
+<script>
+const SCHOLARSHIPS = [{"t":"장학생","c":"성적우수","o":"(재)남정장학재단","u":"특정대학","inc":"해당없음","gpa":"·  학업성적이 B+ 이상인 자※ 4.5점 만점 기준 3.5 이상","rs":"2026-01-02","re":"2026-01-08","b":"·  250만원 ·  대한민국 국적을 가진 자로 2025년 1학기 등록 예정 대학생·  국비 또는 타 장학금(부모의 회사에서 지급하는 자녀 학자금포함)을 받고 있지 않거나 학비 면제자가 아닌 자 ·  인문·사회계열 분야 ·  장학생 신청서·  장학생 추천서 ·  전 학","url":"http://www.namjeong.or.kr"},{"t":"장학생","c":"성적우수","o":"오뚜기재단","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  1/2학년 전학기 전체 평균 성적이 80점(3.0/4.5) 이상이고 F학점으로 평가된 과목이 없는 자 ","rs":"2026-01-02","re":"2026-01-08","b":"·  등록금(수업료) 전액(졸업시까지 최대 2년까지 수혜가능) ·  품행이 단정하고 타의 모범이 된다고 인정되는 자·  미래에 식품 전공 분야에서 진취적으로 활약할 자(식품 관련 학과에만 해당)·  2026학년도 1학기에 3학년 1학기 진학 예정자※ 자세한 사항은 첨부","url":"해당없음"},{"t":"해동장학생","c":"기타","o":"해동과학문화재단","u":"4년제(5~6년제포함)일반대학","inc":"·  한국장학재단 소득 분위 4분위 이내","gpa":"해당없음","rs":"2025-12-02","re":"2026-01-08","b":"·  연 최대 1200만원·  매월 100만원 분할 지급 ·  26년 3월 기준 21 22 31 진학생(2학기 이상 학업을 연속적으로 할 수 있는 자)·  지원가능 전공: 화학공학·재료공학·전자공학·신소재공학·반도체공학·컴퓨터공학(인공지능전공 포함) ·  초과학기 및 ","url":"http://www.haedongfoundation.org"},{"t":"꿈드림장학생","c":"소득구분","o":"부산중구장학회","u":"4년제(5~6년제포함)전문대(","inc":"·  기초생활수급자 차사위계층 한부모가정 무주택자","gpa":"해당없음","rs":"2025-12-12","re":"2026-01-09","b":"·  300만원 ·  국내소재 대학 재학생 ·  25년도 중구장학회 장학생으로 선발된 이력이 있는 자·  당해연도 휴학생·졸업예정자(학교의 최고학년) ·  장학생 신청서·  개인정보수집이용 제공 및 조회동의서·  장학생 추천서·  서약서·  학부모 또는 보호자 증명 서","url":"http://www.bsjunggu.go.kr/"},{"t":"내신및수능성적우수 생활비지원","c":"지역연고","o":"영천시장학회","u":"해당없음","inc":"해당없음","gpa":"·  (수능성적 기준: 백분위 160점 (국수탐구 중 2개) + 영어 2등급 이내) 또는 내신 종합 1등급이","rs":"2025-12-24","re":"2026-01-09","b":"·  200만원 ·  관내 고등학교 졸업(예정)자로서 내신 1등급 중 수능성적 기준 이상자로 대학에 입학한 학생 ·  당해연도 내 동일인 중복 지급 불가·  대학 입학자에 한함 ·  신청서(별지1)·  개인정보동의서(별지3)·  주민등록등본 또는 초본 (1년 이상 관내","url":"http://www.ycsf.or.kr"},{"t":"미래인재육성장학생","c":"성적우수","o":"부산중구장학회","u":"해당없음","inc":"해당없음","gpa":"해당없음","rs":"2025-12-12","re":"2026-01-09","b":"·  500만원 ·  품행이 단정하고 학업성적 우수자·  대학수학능력시험에서 국.영.수.사탐1(과탐1)중 3개 영역 합 6등급으로 4년제 대학교에 입학 예정인 자 ·  2025년도 (재)중구장학회 장학생으로 선발된 이력이 있는 자·  대학생의 경우 국내 소재 대학 재학","url":"http://www.bsjunggu.go.kr/"},{"t":"삼아장학금","c":"기타","o":"삼아사운드","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  성적: 직전학기 평점 3.0 (4.5만점) 이상 또는 백분위 80점 (100점 만점) 이상·  학점: ","rs":"2026-01-05","re":"2026-01-09","b":"·  삼아 정도장학금 : 500만원·  삼아 미래장학금 : 200만원·  삼아 상생장학금 : 150만원·  등록금 총액과 무관한 현금성 장학금으로 소속대학으로 지급 ·  SR부문 : SR/PA/방송관련 전공학과 재학중인 자·  REC부문 : Recording/Mixin","url":"http://www.samasound.co.kr/"},{"t":"아경비전장학","c":"소득구분","o":"아경장학재단","u":"일반대학원특정대학","inc":"·  갑자기 경제 사정이 어려워져 학업을 지속하기가 어려운 학생 우선 선","gpa":"·  직전 학기(계절학기 제외) 성적 3.0 이상/ F 및 U 학점 미보유자","rs":"2025-12-22","re":"2026-01-09","b":"·  200만원 ·  아주대학교 경영대학원 석사과정 재학생 ·  휴학생 및 휴학예정자 제외·  ERP 전공자 제외·  4학기 이상 이수자는 제외※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  장학생 추천서·  자기소개서·  성적증명서·  증빙서류※ 자세한 사항은 홈","url":"https://mba.ajou.ac.kr"},{"t":"일반장학금","c":"기타","o":"(재)서편탐장학선교재단","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2025-12-23","re":"2026-01-09","b":"·  100만원 ·  국내 대학 재학생으로서 학업성적이 우수하거나 또는 재정 사정이 어려운 학생·  학년 및 전공 제한은 없음※ 미 자립교회 목회자 및 군선교자(민간 목사) 자녀 우대 ·  타 장학재단/기업 장학금 등 수혜자※ 타 장학금(교내외)수령 학생도 지원 가능하","url":"http://www.serpentem.org"},{"t":"일반장학금","c":"소득구분","o":"아경장학재단","u":"특정대학","inc":"·  가정형편이 곤란한 학생(소득분위가 높지 않을수록 우대)","gpa":"·  직전학기 성적 우수자 (학과학년 상위 30% 이내)·  최소기준 : 직전학기 12학점 이상 취득 및 평","rs":"2025-12-30","re":"2026-01-09","b":"·  등록금 전액(학비성+생활비성)※ 수업료로 선감면 초과금액은 학업장려금으로 지원 ·  2026학년도 1학기 기준 정규학기 재학생 / 약대는 3학년 이상 ·  학년은 학과마다 상이※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  2026학년도 2학기 휴학예정자 · ","url":"http://pharm.ajou.ac.kr"},{"t":"장학생","c":"기타","o":"이한열기념사업회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2025-12-29","re":"2026-01-09","b":"·  150만원 ·  전국 대학 전문대·4년제 대학(정규 및 비정규) 재학생·  우리 사회의 민주화를 위해 기여한 자의 가족·  이한열 정신을 이어받아 활동하는 자·  어려운 조건 속에서 학업을 이어가고자 하는 자 해당없음 ·  신청서와 추천서·  재학증명서 1통(서류","url":"http://www.leememorial.or.kr/"},{"t":"장학생","c":"지역연고","o":"(재)행복영도장학회","u":"4년제(5~6년제포함)전문대(","inc":"·  생계곤란 : 성적우수 기준에 미달하더라도 경제적 이유로 학업이 곤란","gpa":"·  성적우수 : 학년 교과목 성적이 평균B+이상인 대학생","rs":"2026-01-05","re":"2026-01-09","b":"·  1인당 200만원 ·  특기 : 문화/예술/체육/과학 기능분야에 소질과 재능이 뛰어난 학생으로서 시 단위 이상의 대회에서 1위 입상 또는 자격 취득자 ·  국가·지방자치단체·학교·타 기관 등으로부터 장학금을 받고 있는 학생 또는 받을 예정인 학생·  1가구에 1명","url":"http://hll.yeongdo.go.kr"},{"t":"장학생","c":"성적우수","o":"대은강완석장학재단","u":"4년제(5~6년제포함)전문대(","inc":"·  소득분위 5분위 이내인 자 (한국장학재단)","gpa":"·  전학년 전체평점 4.0/4.5 이상","rs":"2025-12-26","re":"2026-01-09","b":"·  1000만원(연간/1·2학기 분할지급)·  2026년도 등록금/입학금 전액·  학업보조금(생활비) 차등지급※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  어려운 가정형편 속에서도 학업성적이 우수하고 인성과 품행이 방정하여 장래 성장 가능성이 큰 신입생 및 재학","url":"http://daeeunsf.org"},{"t":"학업성적우수","c":"성적우수","o":"부산중구장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  당해 학년 학업성적이 평균 B이상","rs":"2025-12-12","re":"2026-01-09","b":"·  300만원 ·  국내소재 대학 재학생 ·  2025년도 중구장학회 장학생으로 선발된 이력이 있는 자·  당해연도 휴학생·졸업예정자(학교의 최고학년)· ·  장학생 신청서·  개인정보수집이용 제공 및 조회동의서·  장학생 추천서·  서약서·  주민등록등본·  학부모","url":"http://www.bsjunggu.go.kr/"},{"t":"DB드림리더장학금","c":"소득구분","o":"재단법인 DB김준기문화재단","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"·  성적 누적 평점 B0이상","rs":"2025-12-17","re":"2026-01-09","b":"·  생활비 장학금 학기당 300만원 지급 ·  전국 4년제 대학교 학부 5학기 또는 6학기(3학년)인 자 (전공 무관)·  DB드림리더 활동에 우선순위를 두고 1년간 열심히 활동할 수 있는 학생·  한국장학재단 학자금 지원구간 8구간 이하 우대·  기획력 리더십이 우","url":"https://www.dbfoundation.or.kr"},{"t":"북한이탈주민 장학생","c":"해당없음","o":"한국증권금융꿈나눔재단","u":"해당없음","inc":"·  한국장학재단 학자금 지원구간 5구간 이하","gpa":"해당없음","rs":"2025-12-08","re":"2026-01-11","b":"·  학기당 300만원(연 600만원) ·  2026년 1학기 국내 대학 입학 예정인 북한이탈주민 및 자녀 ※ 기관확인필요 ·  장학금 신청서 및 자기성장계획서·  개인정보 동의서 및 초상권사용 동의서·  서약서·  재학증명서·  가족관계증명서·  북한이탈주민 확인서·","url":"http://foundation.ksfc.co.kr"},{"t":"자립준비청년 장학생","c":"해당없음","o":"한국증권금융꿈나눔재단","u":"해당없음","inc":"해당없음","gpa":"해당없음","rs":"2025-12-08","re":"2026-01-11","b":"·  학기당 300만원(연 600만원) ·  2026년 대학 입학 예정인 전국 아동양육기관 자립준비청년(보호종료 및 보호아동) ※ 기관확인필요 ·  장학금 신청서 및 자기성장계획서·  개인정보 동의서 및 초상권사용 동의서·  한국증권금융꿈나눔재단 장학금신청 기관 추천서","url":"http://foundation.ksfc.co.kr"},{"t":"장학생","c":"성적우수","o":"월악장학문화재단","u":"4년제(5~6년제포함)","inc":"·  학자금 지원구간 9분위 이하","gpa":"·  소득이 가장 낮은 학생 중 성적이 가장 높은 학생 추천","rs":"2025-12-22","re":"2026-01-12","b":"·  등록금성 장학금 200만원(1년간 1회) 해당없음 ※ 기관확인필요 ·  장학생지원서(재단양식)1부·  지도교수 추천서(재단양식)1부·  재학증명서 1부·  성적증명서 1부·  이력서 1부·  가족관계증명서 1부※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  기","url":"해당없음"},{"t":"희망다솜장학금","c":"소득구분","o":"교보생명교육문화재단","u":"4년제(5~6년제포함)전문대(","inc":"·  수급자/차상위계층/한부모·조손가정/소년소녀가정/위탁가정 청소년에 해","gpa":"해당없음","rs":"2025-11-27","re":"2026-01-12","b":"·  학기당 200만원·  우수 학습자의 경우 50~80만원의 성적우수장학금 추가지급※ 기준 충족시 대학 입학부터 졸업시(8학기)까지 장학금 지원 ·  보육원/공동생활가정 등 사회복지시설에서 성장한 2025학년도 국내 대학 신입생·  수급자/차상위계층/한부모·조손가정/","url":"https://www.kbedu.or.kr/"},{"t":"OK배정장학금","c":"성적우수","o":"ok배정장학재단","u":"4년제(5~6년제포함)일반대학","inc":"·  소득분위 8분위 이내","gpa":"·  전체 평점 4.0/4.5 (3.7/4.3) 이상※ 본인이 계산한 환산점수 및 반올림 불가※ 자세한 사항","rs":"2025-12-09","re":"2026-01-12","b":"·  매월 최소 75만원~최대 200만원 지급 (내부 심사기준에 따라 개인별 차등지급) ·  본인 또는 부모 중 한분 이상 대학민국 국적·  대학생: 국내외 정규 4년제 대학의 대학생 중 2개 학기 이상 성적증명서 제출가능한 자·  석사/석박통합: 국내외 정규 4년제 ","url":"https://www.okscholarship.or.kr"},{"t":"김정식특지장학생","c":"기타","o":"대덕전자","u":"특정대학","inc":"·  20252학기 기준 한국장학재단 소득구간 0~5구간 해당자","gpa":"해당없음","rs":"2025-12-24","re":"2026-01-13","b":"·  500만원(학기/신규자) ·  20261학기 기준 전기.정보공학부 1~4학년 등록예정자·  20261학기 온라인 수강지도를 받은 자 우대(센터에서 확인) ·  휴학자 및 규정학기 초과자 제외·  휴학 시 장학생 자격 종료. 등록 후 휴학 불가·  다른 교외장학재단","url":"https://ee.snu.ac.kr/"},{"t":"장학생","c":"소득구분","o":"（재）인산장학문화재단","u":"4년제(5~6년제포함)","inc":"·  한국장학재단 학자금 지원구간 통지서 소득분위 9구간 이하","gpa":"·  2026년 기준 2학년 이상 지원가능·  평균평점 B학점 이상으로 직전 학기 이수학점 12학점 이상","rs":"2025-12-24","re":"2026-01-13","b":"·  등록금 전액 지원※ 기관확인필요 ·  재단이 지정하는 국내외 대학교 및 대학원 재학생(2학년 이상) ·  재단이 인정하는 장학금 외 중복 수혜 불가※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  성적증명서 (20252학기 성적포함)·  학자금지원구간통지서(20","url":"https://insanfoundation.or.kr/"},{"t":"장학생","c":"기타","o":"MBK장학재단","u":"해당없음","inc":"해당없음","gpa":"·  성적우수장학의 경우 한 학기 평점 4.0 이상자","rs":"2026-01-02","re":"2026-01-13","b":"·  입학금: 전액·  등록금: 전액·  교재비 : 학기당 20만원·  학업장려비 : 학기당 최대 300만원~150만원·  성적우수장학 : 학기당 50만원·  교환학생장학 : 500만원 ·  2026년도 대학 입학 예정자로서 어려운 생활 및 학업 환경 속에서도 우수한 ","url":"http://www.mbkscholars.org"},{"t":"MBK장학생","c":"성적우수","o":"재단법인 엠비케이장학재단","u":"해당없음","inc":"해당없음","gpa":"해당없음","rs":"2026-01-02","re":"2026-01-13","b":"·  입학금 전액·  등록금 전액 (한 학기 평점 3.0 이상 유지시)·  교재비 20만원 (한 학기)·  학업장려비 300 ~ 150만원 (매 학기/해당자)·  성적우수장학금 50만원 (한 학기/평점 4.0 이상)·  교환학생장학금 500만원 (1회/해당자)※ 자세한","url":"http://www.mbkscholars.org"},{"t":"면학장학금","c":"소득구분","o":"양천장학회","u":"4년제(5~6년제포함)","inc":"·  소득분위 등급 3분위 이하인 자에 한함","gpa":"·  전(全) 학년 각 학기 수강학점 16학점 이상·  평점학점 3.0 이상 4.5만점점","rs":"2026-01-12","re":"2026-01-14","b":"※ 기관확인필요 ·  대학교 2학년 이상 재학 중인 자 ·  최근 3년 이내 가족 중 (재)양천장학회에서 장학금을 받은 자·  군입대·휴학 및 유학예정자 ·  장학회 선발원서(소정양식. 연락처 명기)·  자기소개서(소정양식) 1부·  학교장 또는 학장 추천서(지도교수 ","url":"https://www.inha.ac.kr/bbs/kr/8/40695/artclView.do"},{"t":"문봉장학금","c":"기타","o":"(재)문봉장학회","u":"특정대학","inc":"해당없음","gpa":"해당없음","rs":"2025-12-29","re":"2026-01-14","b":"·  등록금 전액/2년 ·  20261학기 5학년 재학 예정인 이화여자대학교 정규등록 약대 학부생·  성적우수자·  가계곤란자 ·  타 장학금 수혜불가 장학금을 수혜하고 있는 학생 지원 불가·  타 장학금(전액) 수혜자 (전액이 아닐 경우 등록금 잔액을 장학금으로 지급","url":"http://cms.ewha.ac.kr"},{"t":"일반장학금","c":"성적우수","o":"양천장학회","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"·  전(全) 학년 각 학기 수강학점 16학점 이상·  평점학점 3.8 이상 (4.5만점)인 자","rs":"2026-01-12","re":"2026-01-14","b":"※ 기관확인필요 ·  대학교 2학년 이상 재학 중인 자 ·  장학금 수혜 2회 이상인 경우 1회 성적 미달 시 경고/2회 성적 미달 시 수혜 대상에서 제외·  군입대·휴학 및 유학예정자·  최근 3년 이내 가족 중 (재) 양천장학회에서 장학금을 받은 자※ 자세한 사항은","url":"https://www.inha.ac.kr/bbs/kr/8/40695/artclView.do"},{"t":"장학생(학업성적우수)","c":"성적우수","o":"서울상대향상장학회","u":"특정대학","inc":"·  가정형편이 어려운 학생","gpa":"·  2026학년도 1학기 성적 3.0이상 및 10학점 이상 이수자","rs":"2026-01-06","re":"2026-01-14","b":"·  등록금 전액 ·  인성·품행이 단정한 학생·  2026학년도 1학기 교내장학금 혹은 국가장학금을 신청한 학생 ·  규정학기 초과자 제외·  타 장학금 수혜자 제외·  휴학자·학사경고 또는 징계처분자 신청불가·  기타 재단의 서류 및 면접 심사를 통해 계속 지급 여","url":"https://econ.snu.ac.kr/"},{"t":"등록금지원장학생","c":"지역연고","o":"하동군장학재단(하동군청)","u":"특정대학","inc":"해당없음","gpa":"·  직전학기 학업성적 평균 3.0 (4.5만점) 이상인 자","rs":"2026-01-13","re":"2026-01-15","b":"※ 기관확인필요 ·  4년 지원: 5개 대학(서울대/ 연세대/ 고려대/ 포항공대/ 카이스트) 재학생 ·  국가인권위원회 개선권고에 따라 사업폐지로 인해 2021년도부터 신규 장학생은 선발하지 않음(단 2020년도 입학생 및 기존지원 재학생은 졸업 시까지 지원) ·  장","url":"http://scholarship.hadong.go.kr"},{"t":"신규장학생","c":"소득구분","o":"재단법인 신한장학재단","u":"4년제(5~6년제포함)전문대(","inc":"·  기초생활수급자 또는 차상위계층·  기타 생활 및 학업 여건이 어려운","gpa":"·  수능성적 4개 영역(국어·수학·영어·탐구)중 3개 영역이상 4등급 이내 또는 고교 내신 이수과목1/2 ","rs":"2025-12-22","re":"2026-01-15","b":"·  연간 600만원※ 전액 학업보조비(25년도부터 대학 등록금 지원은 하지 않으며 전액 학업보조비로만 지급) ·  2026년도 대학교 입학예정자 ·  한국장학재단 및 교내 장학금 이외의 타 재단의 장학금을 수령하는 경우 장학생 선발에서 제외 ·  장학생 신청서·  장","url":"http://www.shsf.or.kr"},{"t":"자립장학생","c":"지역연고","o":"하동군장학재단(하동군청)","u":"4년제(5~6년제포함)전문대(","inc":"·  경제적 이유(기초생활수급자/ 차상위계층 등 법정저소득층)로 수학이 ","gpa":"·  직전학년 학업성적 평균 3.0(4.5만점) 이상인 자","rs":"2026-01-13","re":"2026-01-15","b":"·  100만원 해당없음 ※ 기관확인필요 ·  장학생 신청서·  재학증명서·  고등학교 졸업증명서·  성적증명서·  주민등록초본(본인 및 부모)·  수급자 또는 차상위 증명서※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ※ 기관확인필요 장학금","url":"http://scholarship.hadong.go.kr"},{"t":"장학금","c":"소득구분","o":"(재)삼송장학회","u":"4년제(5~6년제포함)전문대(","inc":"·  가정형편이 어려운 학생 우선 선발","gpa":"·  직전학기 평균평점이 B(3.0)학점 이상/F학점 없을 것","rs":"2026-01-08","re":"2026-01-15","b":"※ 기관확인필요 ·  전기/전자/기계/신소재 공학 등 공학계열 재학생(초과학기 제외)·  성적 기준 내에서 학구열이 높으나 학자금이 곤란하여 학업을 계속할 수 없는 학생·  성실하고 우수한 재능을 가진 학생 ·  장학생 추천 기준에 해당하지 않는 자·  금고 이상의 형","url":"https://www.samsong.org/standard.htm"},{"t":"장학생","c":"기타","o":"(재)고양부삼성사재단","u":"4년제(5~6년제포함)일반대학","inc":"해당없음","gpa":"·  직전학기 12학점 이상 이수 학생·  직전학기 학업성적이 100점 환산점수 77점 이상 학생","rs":"2026-01-02","re":"2026-01-15","b":"·  1인당 200만원 ·  학업 성적이 우수하고 품행이 단정하여 장래가 크게 촉망되는 학생·  삼성의 후예로 대학교 및 일반 대학원 재학생·  타성은 제주도내 대학교 재학생(제주대학교 제주한라대학교 제주관광대학교)※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  직","url":"http://www.samsunghyeol.or.kr/"},{"t":"케이씨미래장학금","c":"성적우수","o":"KC미래장학재단","u":"4년제(5~6년제포함)특정대학","inc":"·  경제적 도움이 필요한 자 우대","gpa":"·  전체 학년 평점 평균 3.0/4.3 (3.3/4.5) 이상","rs":"2025-11-10","re":"2026-01-15","b":"·  생활비성: 매 학기당 400만원 (800만원/년)·  전체 8학기 졸업기준 졸업 시까지※ 1인당 지원한도: 1200만원/년※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  반도체 및 첨단소재와 관련된 이공계대학 (공과대학/자연과학대학)의 2~3학년 재학생 (20","url":"http://www.kcffd.org/"},{"t":"특기입학장학생","c":"특기자","o":"하동군장학재단(하동군청)","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"해당없음","rs":"2026-01-13","re":"2026-01-15","b":"※ 기관확인필요 ·  관내 고등학교를 졸업하여 특기생으로 우수대학에 입학한 학생(우수대학 범위와 지급액은 이사회에서 결정정) ※ 기관확인필요 ·  장학생 추천서·  특기입학 증빙서류·  학생 및 직계존속 주민등록초본※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  학","url":"http://scholarship.hadong.go.kr"},{"t":"특지장학생(임광)","c":"지역연고","o":"재단법인 충북인재평생교육진흥원","u":"4년제(5~6년제포함)일반대학","inc":"해당없음","gpa":"·  직전학기 성적 3.0 이상(대학원생 3.3 이상)/4.3 만점 기준","rs":"2025-12-29","re":"2026-01-15","b":"·  등록금 전액 (의대/약대/수의대는 공대 기준) ·  서울대학교 재학생(대학생 및 대학원생) ·  규정학기 초과자·  타 장학금 기수혜자·  26년도 임광 특지 장학생으로 선발된 자는 2026년 진흥원 장학금 신청 불가·  이전 임광특지 장학금 수혜자는 특정 경우를","url":"http://www.chrdf.or.kr"},{"t":"학업성적우수자","c":"지역연고","o":"하동군장학재단(하동군청)","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  직전학년(직전 2개 학기) 학업성적 평균 3.5이상인자(성적 60% + 학교 가산점 40%)","rs":"2026-01-13","re":"2026-01-15","b":"·  100만원 해당없음 ·  졸업 예정자 및 정규 학제 기간 초과자·  휴학 또는 예정/ 정학/ 퇴학 등 징계처분 받은 자·  대학원/ 사이버대/ 평생교육원 제외·  2회 이상 수혜 불가 ·  장학생 신청서·  재학 증명서·  고등학교 졸업 증명서·  성적증명서·  ","url":"http://scholarship.hadong.go.kr"},{"t":"기타장학금","c":"기타","o":"재단법인 수영구장학재단","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2025-12-17","re":"2026-01-16","b":"·  200만원 ·  지역사회 헌신·봉사했거나 의로운 일을 하여 수영구를 크게 빛낸 학생으로서 부산광역시장상 이상 표창을 수상하고 2025년 자원봉사활동 실적 30시간 이상인 자 ·  1세대 1자녀에 한함·  국가·지방자치단체·타 기관 등으로부터 장학금을 받고 있는 자","url":"http://www.suyeong.go.kr/index.suyeong"},{"t":"늘푸른장학생","c":"기타","o":"정읍산림조합","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2026-01-12","re":"2026-01-16","b":"·  대학생 100만원 ·  조합원자녀(조합원포함) 중 현재 대학교에 재학 중인 자(2년제 및 4년제 대학)·  조합원 가입 후 3년 이상 조합원 신분을 계속 유지한 자녀·  조합원이 직접 부양하는 자녀(손자녀의 경우 신청제외) ·  정읍산림조합 조합원 가입일이 202","url":"http://www.jusj.kr"},{"t":"대학생장학금","c":"기타","o":"재단법인 선암장학재단","u":"4년제(5~6년제포함)","inc":"·  소득 수준에 따라 가정형편이 어려운 자 우선 선발 (생활보호대상자)","gpa":"·  전체학년 성적이 3.5(4.5 만점 기준 80%) 이상인 자","rs":"2025-12-15","re":"2026-01-16","b":"·  연간 400만원 / 졸업시까지 최대 2년※ 학습보조비 및 교재비 성격의 장학금 ·  2025년 재학생 중 2026년도 3학년 1학기로 재학 예정인 학생·  4년제 대학에 재학 중인 학생·  화학공학/고분자공학/공업화학학 관련 학부에 재학 중인 학생 ·  휴학생 자","url":"http://www.sunam107.or.kr"},{"t":"서울법대장학금","c":"기타","o":"서울법대장학재단","u":"일반대학원특정대학","inc":"해당없음","gpa":"해당없음","rs":"2026-01-05","re":"2026-01-16","b":"·  등록금 반액 지원 (신입생)·  등록금 전액 지원 (신입생 및 재학생) ·  신청년도 서울대학교 일반대학원(법학) 신입생 및 재학생 ·  타 장학금을 받게 된 경우 중복 지급하지 않음 ·  장학생 선정 신청서·  자기소개서·  가족관계증명서·  성적증명서(학사과정","url":"http://law.snu.ac.kr"},{"t":"성적우수장학금","c":"지역연고","o":"재단법인 수영구장학재단","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  당해 학년 학업 성적 평균이 B이상","rs":"2025-12-17","re":"2026-01-16","b":"·  200만원 ·  품행이 단정하고 학업성적 우수자 ·  1세대 1자녀에 한함·  국가·지방자치단체·타 기관 등으로부터 장학금을 받고 있는 자 또는 받을 예정인 자※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  장학금신청서·  주민등록등본·  가족관계증명서·  재","url":"http://www.suyeong.go.kr/index.suyeong"},{"t":"월정김용복장학금","c":"소득구분","o":"(재)용복장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  직전학기 학점이 4.5만점 기준 3.7 이상·  직전 정규학기 최소 이수학점 기준 12학점 이상(계절학","rs":"2026-01-01","re":"2026-01-16","b":"·  선발시점부터 대학교 졸업까지 등록금 전액(등록금 수업료 기성회비 일체)※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  학업 성적이 우수하나 가정 형편이 어려운 학생 및 신입생·  농촌 출신이거나 농업 관련 학과 전공자로 농업발전에 관심있는 자·  장학금 수여식","url":"http://www.yongpok.org"},{"t":"일반장학생","c":"지역연고","o":"부산진구장학회","u":"해당없음","inc":"해당없음","gpa":"·  입학예정자 : 수능성적 3개 영역(국어·영어·수학) 평균 5등급 이내인 자로서 대학입학시험 합격자·  ","rs":"2026-01-05","re":"2026-01-16","b":"·  대학생 350만원 지역인재(대학생) 500만원 ·  4년제 및 전문대 대학생 ·  등록금 전액을 국가장학금·학교장학금 및 기타장학회에서 받는 학생·  전국가구 월 평균소득(4인기준) 이상인 자·  졸업예정자·  휴학예정자·  부모가 부동산을 3억 5천만원 이상 소","url":"http://www.busanjinsf.kr"},{"t":"장학생","c":"지역연고","o":"재단법인 종로구장학회","u":"4년제(5~6년제포함)전문대(","inc":"·  부모(가족)의 2025년도 재산세과세금액이 250만원 이하인 가정환","gpa":"·  대학생: 직전학기 학점 2.5이상(4.5만점)·  대학원생: 직전학기 학점 3.6이상(4.5만점)※ 성","rs":"2026-01-02","re":"2026-01-16","b":"·  대학생 회당 등록금 내 200만원까지※ 연 2회 지급/장학수혜기간 주소지 성적 등 신청자격 유지시※ 성적우수 장학생의 경우 졸업 시까지 등록금 전액 지원(학기별 600만원 이내) ·  대학생 및 대학원생 1학기 이상 재학생 ·  최근 2년 이내 본인 또는 가족이 ","url":"http://cafe.naver.com/jongnoscholarship"},{"t":"장학생","c":"기타","o":"사단법인 위드다문화","u":"4년제(5~6년제포함)일반대학","inc":"해당없음","gpa":"·  학점 평균 80점 이상인 자 (백분위 환산 기준)·  대학 신입생의 경우 생활기록부상 고등학교 성적 백","rs":"2025-12-23","re":"2026-01-16","b":"·  국내대학·대학교 : 100만원·  해외 대학·대학교 : 150만원·  대학원(석사과정까지) : 150만원·  등록금에 한해 위의 금액을 한도로 지원하므로 타 장학금 수혜자의 경우 잔여 등록금액을 확인하여 지원 바람·  선발 장학생은 최초 선발시 재학중인 학위과정을","url":"https://www.daumunwha.or.kr"},{"t":"장학생","c":"해당없음","o":"엔지니어링인재육성재단","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"·  최근 이수학기 및 전체 학기 평균평점이 각각 3.0(4.5만점 기준) 이상인 자","rs":"2025-12-29","re":"2026-01-16","b":"· 1인당 연간 500만원(1학기당 250만원 지급) ·  국내 4년제 대학 3학기 이상 재학 중인 자· 최근 이수학기 이수학점이 12학점 이상인 자 해당없음 · 장학금 지원서(재단 양식)· 재학증명서 1부· 성적증명서 1부(전체 학년 기준)· 추천서 1부(재단 양식)","url":"http://egifoundation.or.kr/"},{"t":"장학생","c":"해당없음","o":"산호장학회","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"·  25년도 2학기 평점 평균이 높은 학생(1순위)※ 자세한 사항은 홈페이지 참고","rs":"2026-01-09","re":"2026-01-16","b":"·  300만원 ·  25년도 2학기 12학점 이상 이수 ·  26년 1학기 국가장학금 및 타 장학금 중복수혜 불가·  26년 2월 졸업예정자 및 수업연한초과자 및 휴학예정자 제외 ·  추천서·  개인정보동의서·  성적증명서 ※ 기관확인필요 장학금","url":"https://www.jejunu.ac.kr/ara/noticesurvey/outEvent.htmact=view&seq=268552"},{"t":"재능장학금","c":"특기자","o":"재단법인 수영구장학재단","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2025-12-17","re":"2026-01-16","b":"·  200만원 ·  문화·예술·체육·과학·기능분야에 소질과 재능이 뛰어난 대학생·  광역시 및 도 단위 이상 대회 및 경진대회 3위 이내 입상자 (전국대회 5위 이내) ·  순수 재능 대회가 아닌 이벤트성 대회(지역축제 등 행사일부) 입상자·  단순 생활체육분야 경기","url":"http://www.suyeong.go.kr/index.suyeong"},{"t":"학업우수장학생","c":"기타","o":"재단법인 드림파크장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  신입생 : 고등학교 3학년 성적이 산출되는 과목 중 1~2등급 이내인 과목의 비율이 80% 이상인 자·","rs":"2026-01-05","re":"2026-01-16","b":"·  150만원 해당없음 ·  해외·방송통신·사이버·학점은행제 대학 제외※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  장학생 신청서·  성적증명서(4.5만점 기준으로 발급)·  주민등록 등·초본 각 1통(주변영향지역 거주기간 모두 포함)·  개인정보 수집·이용 및","url":"https://www.slc.or.kr"},{"t":"호반장학생","c":"성적우수","o":"호반장학재단","u":"4년제(5~6년제포함)","inc":"·  가구 중위소득 150% 이하 (한국장학재단 소득구간 : 7구간 이하","gpa":"·  평균 평점 3.5이상 (4.5만점 기준)","rs":"2025-12-26","re":"2026-01-16","b":"·  대학교 3년간 매학기 장학금 지원(총 6학기)※ 학기당 300만원(생활비 장학금) ·  혁신적 아이디어와 도전정신을 가진 2학년 재학 예정자 (2026년 1학기 기준) ※ 기관확인필요 ·  개인정보 동의서 (온라인신청 시 작성가능)·  대학 합격 증명서·  수학능","url":"http://hobanfoundation.or.kr"},{"t":"효명장학사업","c":"장애인","o":"실로암시각장애인복지관","u":"4년제(5~6년제포함)일반대학","inc":"해당없음","gpa":"·  4년제 정규대학·  15학점 이상 이수자·  (단 졸업학기 신청자는 12학점 이상 이수자 가능)·  대","rs":"2026-01-05","re":"2026-01-16","b":"※ 기관확인필요 ·  261학기 등록 예정자 (국내 학사 8학기/국내외 석사 4학기/국내외 박사 6학기까지 지원 가능)·  성적이 우수하고 인성과 품행이 반듯한 시각장애대학생·  직전학기 성적 증빙이 가능한 시각장애대학생·  국내 4년제 정규 대학·대학원·로스쿨 재학중","url":"http://www.silwel.or.kr/v2/index.php"},{"t":"AX 행복장학생","c":"해당없음","o":"한국장애인재활협회","u":"4년제(5~6년제포함)전문대(","inc":"·  (장애당사자) 중위소득 120% 이하 ·  (장애가정 청소년 · 청","gpa":"해당없음","rs":"2025-12-15","re":"2026-01-16","b":"·  300만원(학기당 150만원씩 분할 지급) ·  (장애당사자) 본인이 등록 장애인인 경우·  (장애가정 청소년 · 청년) 직계가족(조부모·부모형·제자매) 중 등록 장애인이 있는 경우/주양육자 기준 ·  타 장학금과 중복수혜 불가(국가장학금에 한해 중복 수혜 가능)","url":"https://rikorea.or.kr/associationnews/%EC%82%AC%EC%97%85%EA%B3%B5%EC%A7%80/mod=document&uid=4473"},{"t":"유당장학생","c":"성적우수","o":"재단법인 유당장학재단(서울)","u":"4년제(5~6년제포함)전문대(","inc":"·  가정형편이 어려운 자","gpa":"·  직전 학년(2개 학기) 성적 백분위 80점 이상인 자","rs":"2026-01-12","re":"2026-01-18","b":"·  선발된 학생의 성적 및 가정형편을 감안하여 차등 지급·  등록금성 장학 ·  대학교 정규 학기생·  가정형편이 어려운 자 우선 선발 ·  기관확인필요 ·  장학금 지원 신청서(재단양식)·  학교 추천서 ·  자기 소개서·  성적 증명서·  가족관계증명서(보호자 명","url":"http://www.yudang.or.kr/"},{"t":"기숙사비(주거비)","c":"지역연고","o":"재단법인 함안군장학재단","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"·  수능 3개 영역(탐구영역 1개 포함)의 합이 10등급 이내로 대학에 입학한 자 중 직전 학기의 성적 평","rs":"2026-01-12","re":"2026-01-19","b":"·  80만원(4개월 분할 지급) ·  관내 초·중·고를 모두 졸업한 자 : 1순위·  관내 초·중·고 2곳을 졸업한 자 : 2순위·  관내 고등학교를 졸업한 자 : 3순위 중 예산범위 내 지급 ·  학생의 본분을 벗어난 행동으로 사회적 물의를 야기한 자·  기타 중대","url":"https://www.hamansf.or.kr"},{"t":"문숙장학금","c":"성적우수","o":"재단법인문숙장학재단","u":"특정대학","inc":"·  국가장학금 소득구간이 기초/차상위 ~ 6구간에 속한 학생·  가정의","gpa":"·  직전 학기 성적이 3.5 이상인 학생이며 정규학기 계속 등록자(직전학기 휴학자 제외)","rs":"2026-01-07","re":"2026-01-19","b":"·  4년제 대학생: 150만원 ·  본 재단으로부터 장학생 추천 의뢰를 받은 대학교에서 추천한 학생·  이공계열의 대학생 ·  전 학기 휴학 등은 제외·  문숙장학금을 포함한 모든 장학금 수혜금액이 등록금을 초과하는 학생 (초과될 경우 반환처리)·  초과학기 등록학생","url":"http://cafe.daum.net/moonsookSF"},{"t":"아라성장장학금","c":"해당없음","o":"재단법인 함안군장학재단","u":"4년제(5~6년제포함)","inc":"·  경제수준이 어려운 자 순으로 예산의 범위 내 선발","gpa":"·  의료보험 납부액이 같을 경우 성적 우수자 순순","rs":"2026-01-12","re":"2026-01-19","b":"·  30만원 ~ 100만원 ※ 기관확인필요 ·  한 학기 이상 휴학한 때·  징계 처분을 받은 때·  관외 학교로 전학한 때※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  장학생 추천서·  학교별 추천 장학생 연명부·  건강보험료 납부증명서·  주민등록등본 1통·","url":"https://www.hamansf.or.kr"},{"t":"우수장학금","c":"지역연고","o":"재단법인 함안군장학재단","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"·  (18년 이전 진학생) A급(국영수 각 2등급 이내) 진학 장학금을 받은 학생 중 직전학기의 성적 평점","rs":"2026-01-12","re":"2026-01-19","b":"·  100만원 ~ 250만원※ 자세한 사항은 첨부파일 또는 홈페이지 참고 해당없음 ·  타 장학금과 합해서 학비(등록금)를 초과하지 않는 범위 내에서 지급·  학생의 본분을 벗어난 행동으로 사회적 물의를 야기한 자·  기타 중대한 사유로 이사회에서 지급 중단을 의결하","url":"https://www.hamansf.or.kr"},{"t":"진학장학금","c":"지역연고","o":"재단법인 함안군장학재단","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"·  전국 수능 국어수학영어 3개영역(탐구 영역 1개 포함)의 합이 6등급 이내로 대학에 입학한 자","rs":"2026-01-12","re":"2026-01-19","b":"·  합 3등급 이내 250만원·  합 5등급 이내 100만원 해당없음 ·  타 장학금과 합해서 학비(등록금)를 초과하지 않는 범위 내에서 지급·  신청기준을 갖추더라도 본 장학재단 내 중복 신청 불가·  신입생에게 1회만 지급·  학생의 본분을 벗어난 행동으로 사회적","url":"https://www.hamansf.or.kr"},{"t":"진학장학금(특별장학금)","c":"지역연고","o":"재단법인 함안군장학재단","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"·  전국 수능 3개 영역(탐구 영역 1개포함)의 합이 6등급 이내로 대학에 입한 자(성적순 선발)","rs":"2026-01-12","re":"2026-01-19","b":"·  합 3등급 이내 250만원·  합 5등급 이내 100만원 해당없음 ·  타 장학금과 합해서 학비(등록금)를 초과하지 않는 범위 내에서 지급·  신입생에게 1회만 지급·  학생의 본분을 벗어난 행동으로 사회적 물의를 야기한 자·  기타 중대한 사유로 이사회에서 지급","url":"https://www.hamansf.or.kr"},{"t":"남강장학생","c":"지역연고","o":"(재)남강장학회","u":"해당없음","inc":"해당없음","gpa":"·  직전학기 평점평균 3.5 이상·  직전학기 이수학점 12학점 이상","rs":"2026-01-13","re":"2026-01-20","b":"·  250만원 한도 등록금 지원 ·  261학기 기준 3학기(2학년 1학기) 재학 예정자 ※ 기관확인필요 ·  장학생신청서 1부·  성적증명서 1부·  자기소개서 1부·  보호자 주민등록초본 1부·  반명함판 사진 1매※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ※","url":"해당없음"},{"t":"자립장학생","c":"소득구분","o":"수도권매립지주민지원협의체","u":"해당없음","inc":"·  국민기초생활수급자 및 차상위계층(중위소득 50%이내)/조손가정/한부","gpa":"해당없음","rs":"2026-01-07","re":"2026-01-20","b":"·  150만원 해당없음 ·  25년도 검단장학재단 및 26년도 드림파크 장학재단 장학금 수여자 제외·  동일 세대 지원자 2인 이상일 경우 1인만 지급·  외국 유학생 및 교환학생은 장학생 선발에서 제외※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  장학생신청서·","url":"https://www.slc.or.kr/"},{"t":"늘푸른 장학생","c":"해당없음","o":"진안군산림조합","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"해당없음","rs":"2026-01-15","re":"2026-01-21","b":"·  100만원 ·  조합원자녀 중 대학교 재학 중인 자(입학예정자 제외)·  진안군산림조합 조합원 가입일이 2024.12.31 이전 가입 후 계속 신분을 유지한 조합원·  조합원이 직접 부양하는 자녀(손자녀 제외) ·  복수조합원 가정은 한 학생만 신청가능(평가기준 ","url":"https://member.nfcf.or.kr/forest/user.tdfa=user.index.IndexApp&c=1004&d=jinan&mc=MEM_JAN"},{"t":"예체능분야 장학금","c":"특기자","o":"사단법인남해군향토장학회","u":"4년제(5~6년제포함)전문대(","inc":"·  (서민자녀) 수급자/차상위계층/중위소득 70% 이하의 서민자녀","gpa":"해당없음","rs":"2026-01-02","re":"2026-01-22","b":"·  1인당 200만원·  단체 100만원 ·  대학 재(진)학생으로 해당 학교 총장의 추천을 받은 자·  체육/과학/문화예술 분야 학생·  예체능 분야 진로목표가 확고하고 재능을 가진 입상자 및 단체 우선·  당해 연도 도대회 이상 3위 이상 입상자 및 국가대표와 그","url":"https://www.namhae.go.kr"},{"t":"장학생","c":"해당없음","o":"재단법인은천장학회","u":"특정대학","inc":"※ 자세한 사항은 첨부파일 또는 홈페이지 참고","gpa":"·  직전 학기 성적 C학점 이상 (백분율 환산 평균 70점 이상)","rs":"2026-01-05","re":"2026-01-22","b":"※ 기관확인필요 ·  미자립교회 교역자 및 선교자 자녀 탈북자(자녀) 중 성적 우수자· 학업성적은 우수하나 경제적 이유로 수학이 곤란한 재학생·  본 재단 이사회가 정한 대안학교 재학생·  고등교육법 제2조 학교의 종류에 포함된 학교 재학생※ 자세한 사항은 첨부파일 또","url":"http://www.euncheom.org"},{"t":"희망장학금(관외대학재학생)","c":"소득구분","o":"사단법인남해군향토장학회","u":"해당없음","inc":"·  부모의 건강보험료 납부액(2025년 1월~12월) 평균금액으로 평가","gpa":"해당없음","rs":"2026-01-02","re":"2026-01-22","b":"·  200만원 ·  관외 대학 재학생(전문대 포함)으로서 총장(학장)의 추천을 받은 자 ·  모든 장학금은 중복 신청 불가※ 기관확인필요 ·  장학생 신청서·  주민등록 등본·  통장사본·  재학증명서·  부모 각각 건강보험 납부확인서 또는 자격득실확인서·  기타점수","url":"https://www.namhae.go.kr"},{"t":"노융희장학생","c":"해당없음","o":"대한국토도시계획학회","u":"4년제(5~6년제포함)기술대학","inc":"해당없음","gpa":"해당없음","rs":"2025-12-08","re":"2026-01-23","b":"·  100만원 ·  각 대학교 도시 및 지역계획학 도시계획 관련 전공자로서 학사 석사 혹은 박사과정 ·  2026년 기준으로 졸업예정자 수료자 ·  장학금 신청서·  장학생 추천서·  성적증명서·  재학증명서·  연구증빙자료※ 자세한 사항은 첨부파일 또는 홈페이지 참","url":"https://kpa1959.or.kr"},{"t":"장학생(학업지원)","c":"소득구분","o":"서울상대향상장학회","u":"특정대학","inc":"·  20261학기 한국장학재단 소득분위 3~6분위 재학생 중 가정형편이","gpa":"·  직전학기 성적 2.4 이상 및 10학점 이상 이수자","rs":"2026-01-06","re":"2026-01-23","b":"·  180만원 / 1학기 (등록금장학금과 중복수혜 가능) ·  인성과 품행이 단정한 학생 ·  규정학기 초과자·휴학자·학사경고 또는 징계자 제외·  타 학업지원 및 생활비 장학금 수혜자 제외 ·  본인 명의 통장사본·  성적증명서·  장학선정신청서·  2026년 1학","url":"https://econ.snu.ac.kr"},{"t":"장학생(일반학과)","c":"소득구분","o":"서울북노회","u":"특정대학","inc":"·  기타 가정형편이 어려운 자(증빙할 수 있는 서류 제출)","gpa":"·  직전학기 평점평균 성적이 3.0 이상인 자","rs":"2026-01-19","re":"2026-01-26","b":"·  등록금의 약 1/3(등록금성) ·  한신대학교 재학생으로 일반학과(신학계열/신학부/신학과/기독교교육학과 제외) 재학생 ·  장학금 수혜내역이 등록금액(2/3)을 초과하는 자(교·내외 장학금 및 국가장학금 포함)·  직전학기 서울북노회장학금(일반학과) 수혜자 제외·","url":"http://www.seoulbuk.org/"},{"t":"지역인재 다문화가족자녀","c":"해당없음","o":"세아해암학술장학재단","u":"4년제(5~6년제포함)","inc":"·  한국장학재단 산정 소득분위 6분위 이하","gpa":"·  20252학기까지의 학점 평균 3.0/4.5 이상·  20261학기 12학점 이상 수강","rs":"2026-01-23","re":"2026-01-27","b":"·  학기 당 100만원 생활비 장학금(선발 후 2년 간 4개 학기 계속 지원) ·  수도권 외 지역 4년제 대학교 2학년 또는 3학년 재학생 중 졸업 후 지역 내 취업을 고려 중인 학생(전공 제한 없음) ※ 기관확인필요 ※ 기관확인필요 ·  1차 자기소개서 위주 서류","url":"https://haiam.seah.co.kr/main/"},{"t":"신규장학생","c":"해당없음","o":"한국해양수산개발원","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"※ 기관확인필요","rs":"2026-01-12","re":"2026-01-28","b":"·  최대 100만원 내외 지원(1학기 기준준) ·  극지 분야 및 극지 관련 분야 전공 석박사과정 신입생·재학생 및 수료생 해당없음 ·  장학생 지원서·  자기소개서·  개인정보 수집활용 동의서·  극지연구계획서·  졸업 후 계획서·  사회기여계획서·  영어 성적 증","url":"https://www.kmi.re.kr/web/board/view.dorbsIdx=68&idx=1612"},{"t":"예·체능및과학특기장학생","c":"특기자","o":"재단법인 거창군장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2026-01-14","re":"2026-01-30","b":"·  50~200만원※자세한 사항은 첨부파일 또는 홈페이지 참고 ·  2025년 예·체능 등 전국대회 3위 이내 또는 도단위 대회 1위 수상자 및 단체·  국가대표 및 이에 상응하는 대표로 선발된자 및 단체·  동일 학제 기 수혜자라도 이전 수상 실적보다 당해 수상의 ","url":"https://www.gcdream.kr"},{"t":"KT디지털인재 장학생","c":"해당없음","o":"KT그룹희망나눔재단","u":"해당없음","inc":"해당없음","gpa":"·  누적 학점 평균 4.5만점 3.5이상 (4.3만점 3.3이상)","rs":"2026-01-14","re":"2026-01-30","b":"·  선발시점부터 정규 학기 졸업 시까지 잔여 학기 등록금 전액 지원 ·  국내 대학 재학생 중 AI 빅데이터 컴퓨터공학 등 ICT관련 전공자· 선발일 기준 대한민국 국적 보유자이면서 학칙에 의한 징계사실이 없는 자 ·  직전학기 12학점 미만 이수한 자·  수혜 기간","url":"https://ktgf.or.kr/"},{"t":"장학생","c":"해당없음","o":"조영식이케다다이사쿠연구회","u":"4년제(5~6년제포함)기술대학","inc":"해당없음","gpa":"해당없음","rs":"2025-12-01","re":"2026-01-31","b":"·  130만원 ·  조영식 및 이케다 다이사쿠의 사상을 학습할 의욕이 있는 자·  평화와 정의를 위한 활동 경험이 있는 자(한 가지 이상의 활동 경험)※ 자세한 사항은 홈페이지 참고 ※ 기관확인필요 ·  펠로우 신청ㅇ서·  서약서 및 개인정보 활용 동의서·  활동 실","url":"https://khcu.ac.kr/notice/detail.docategory=CAMPUS&seq=200353661"},{"t":"높은뜻 푸른장학생","c":"해당없음","o":"높은뜻푸른교회","u":"해당없음","inc":"·  경제적으로 어려운 환경","gpa":"해당없음","rs":"2026-01-04","re":"2026-02-01","b":"·  100~300만원(차등적용) ·  높은뜻 푸른교회 6개월 이상 된 등록교인으로서 대학교 또는 이에 준하는 학교 과정에 있는 재학생(단 휴학생 제외) ·  휴학 예정자 및 휴학생은 장학금 신청 불가·  평균 B학점 이하는 심사에 제외※ 자세한 사항은 홈페이지 참고 ","url":"https://igodswill.org"},{"t":"무지개장학금","c":"장애인","o":"무지개장학재단","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2026-01-02","re":"2026-02-02","b":"·  등록금 중 실납입액(최대 250만원)·  학교 장학금 및 타 기관 장학금 등 중복지원 가능 (본인이 수령하는 장학금을 제외한 학비만 지원) ·  장애인학생 또는 장애인부모 가정의 자녀·  대학교 재학생으로 학업과 기술습득에 대한 욕구를 가지고 있으나 경제적 사정으","url":"http://www.jcatholic.or.kr/"},{"t":"예체능장학생","c":"특기자","o":"동영장학재단","u":"해당없음","inc":"해당없음","gpa":"해당없음","rs":"2026-01-28","re":"2026-02-04","b":"·  100만원 ·  음악·미술·체육·방송 등 예체능 분야 학생 ·  타 장학금(학자금)을 연 200만원 이상 지급받고 있는 경우·  부모나 본인이 직장으로부터 받은 장학금·  울진군에 지급한 장학금·  국가/지방자치단체/공공단체/민간단체 장학금 등※ 자세한 사항은 첨","url":"http://동영장학재단.kr"},{"t":"예/체능대학생","c":"특기자","o":"재단법인 신김포농협 장학회","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"해당없음","rs":"2026-01-05","re":"2026-02-06","b":"※ 기관확인필요 ·  24년도 도대회 이상 수상·  대학생 중 2025학년도에 3학년 또는 4학년으로 진학하는 학생·  신김포농협 조합원 자녀 또는 직계비속으로 손자·손녀 중 부모가 없어 조합원과 주민등록등본 상 동일 주소지에 거주하며 생계를 책임지는 경우 ·  202","url":"http://singimpo.nonghyup.com"},{"t":"글로벌인재육성(예체능)","c":"특기자","o":"횡성인재육성장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  대학수학능력시험 영어 3등급 이내이며 국어·수학 및 탐구 2과목 표준점수 합계가 360점 이상인 자","rs":"2026-02-09","re":"2026-02-13","b":"·  1인당 500만원·  2년간 균등분할 지급 ·  예체능(술)적 재능이 뛰어나 우수대 입학한 자·  대학수학능력시험 성적이 우수한 자·  횡성관내고등학교 졸업생 ·  글로벌인재육성장학금 수혜기간 동안 (재)횡성인재육성장학회 인재육성장학금과의 중복수혜 불가 (열정키움","url":"https://www.hssf.or.kr"},{"t":"장애인장학생","c":"장애인","o":"재단법인 부여군굿뜨래장학회","u":"해당없음","inc":"해당없음","gpa":"해당없음","rs":"2026-01-30","re":"2026-02-13","b":"·  200만원(생활비 장학금) ·  장애인 학생 ·  정규학기 초과 학생 및 휴학생·  대학교 재학생 중 직전학기 12학점 미만 수강자·  사이버대학 및 학점은행제 대학 지원 불가·  국가/학교 장학금 외 부여군 장학금 중복지원자·  한 세대 한 명/하나의 분야만 신","url":"https://www.buyeo.go.kr"},{"t":"재능장학생","c":"특기자","o":"재단법인 부여군굿뜨래장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2026-01-30","re":"2026-02-13","b":"·  1인당 200만원 ·  공고일 1년 전 예체능·과학·전산·수학 등의 전국규모 대회에서 3위 이내 입상 / 개인전 종목 ·  정규학기 초과 학생은 장학생 신청 불가·  대학교 재학생 중 직전학기 12학점 미만 수강자는 신청 불가·  사이버대학 및 학점은행제 대학 지","url":"https://www.buyeo.go.kr"},{"t":"특기장학생","c":"특기자","o":"재단법인 성남시장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2026-02-09","re":"2026-02-13","b":"·  신청 해당학기 등록금 전액 (교과서·학생회비 등 부대비용 제외) ·  과학 및 예술·체육·기능 분야에 소질과 능력이 뛰어난 자·  직전 1년 이내 도·시(시·군)단위규모 이상의 대회에서 3위이상 성적으로 입상한 자 (공연 또는 입상성적 평가 합산점수 30점 이상인","url":"http://snjh.or.kr"},{"t":"일반주민자녀(예능특기)","c":"특기자","o":"횡성인재육성장학회","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"해당없음","rs":"2026-02-04","re":"2026-02-19","b":"·  100만원·  장학금 이중수혜 지원시 제한될 수 있음 ·  최근 1년 이내 도교육감 주최 및 중앙단위(전국) 3위 이내 또는 도 단위의 1위의 입상 경력이 있는 자 ·  2026 횡성인재육성장학회 장학금(향토장학금·예체능미래인재장학금) 수혜자 중복신청 불가·  복","url":"https://www.hssf.or.kr"},{"t":"일반주민자녀(체육특기)","c":"특기자","o":"횡성인재육성장학회","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"해당없음","rs":"2026-02-04","re":"2026-02-19","b":"·  100만원 ·  아래 해당하는 입상경력이 있는자·  전국(소년)체육대회 3위 이내 입상자·  종목별 전국단위 3위 이내 입상자·  종목별 전국동계대회 3위 이내 입상자·  단체로 입상한 경우 장학금은 예산의 범위내에서 이사회에서 결정함 ·  2026 횡성인재육성장","url":"https://www.hssf.or.kr"},{"t":"예체능장학금","c":"특기자","o":"(재)무안군승달장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  예체능(미술음악체육기타) 분야에 소질과 재능이 뛰어난 자 중 도 단위이상 대회에서 입상한 자·  직전학","rs":"2026-02-02","re":"2026-02-20","b":"·  1인당 150만원 ·  2025년 이후 전국대회 및 전남대회 3위 이내 입상자 또는 이와 동등한 요건의 수상자·  위 조건 신청인원 미달 시 예체능 관련 학과 및 학과 재학생 중 성적 우수자 선발 ·  1세대 1명 선발·  2025년 상반기 또는 2025년 하반기","url":"http://www.muan.go.kr"},{"t":"특기장학생","c":"특기자","o":"양양군인재육성장학회","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"해당없음","rs":"2026-01-19","re":"2026-02-20","b":"·  이사회에서 결정(지급년한 : 1년/생활비 명목 장학금) ·  국내 대학에 진학 및 재학 중인 자·  예능·체육·기능에 소질과 재능이 뛰어난 학생으로 신청일 기준 1년 이내에 도 주관이상의 대회에서 입상하여 지역의 명예를 드높인 학생※자세한 사항은 첨부파일 또는 홈","url":"http://www.yysc.or.kr"},{"t":"풍육장학생(특기)","c":"특기자","o":"풍육장학회","u":"4년제(5~6년제포함)해외대학","inc":"해당없음","gpa":"해당없음","rs":"2026-02-01","re":"2026-02-21","b":"※ 기관확인필요 ·  풍양조씨·  공공기관이나 법인이 주최한 전국대회 이상의 수상실적(종목불구)이 있는 자※ 자세한 사항은 첨부파일 또는 홈페이지 참고 ·  전문대생·대학원생·  타처에서 장학금을 받고 있는 학생·  수시전형에 합격한 신입생(수능성적 없는 신입생)·  ","url":"https://cafe.naver.com/choscholarship"},{"t":"우수장학생","c":"장애인","o":"재단법인 금산교육사랑장학재단","u":"4년제(5~6년제포함)전문대(","inc":"해당없음","gpa":"·  신입생 타지역 정규 고등학교 졸업생·재수생·관내 대안학교 졸업생으로 고등학교 3학년 1·2학기 전과목 ","rs":"2026-03-23","re":"2026-03-27","b":"·  (신입생) 등록금 범위내 최대 100만원·  (재학생) 등록금 범위내 최대 250만원 ·  관내 중학교 또는 고등학교를 졸업하고 국내 대학교에 재학중인 학생·  대입검정고시를 통하여 신입학한 학생·  관내 고등학교 졸업생 또는 검정고시를 통하여 2026년 국내대학","url":"http://geumsanedu.or.kr"},{"t":"보훈장학금(특수교육장학)","c":"장애인","o":"국가보훈부","u":"4년제(5~6년제포함)","inc":"해당없음","gpa":"해당없음","rs":"2026-04-01","re":"2026-04-30","b":"·  학기당 30만원 ·  보훈법령에 의한 교육지원대상자 중「장애인 등에 대한 특수교육법」의 특수교육대상자로 특수학교 또는 일반학교 특수(일반)학급에 재학 중인 자 ※ 기관확인필요 ·  보훈장학 신청서·  개인정보 이용 및 제공 사전 동의서·  특수교육대상자 배치 결과","url":"https://www.mpva.go.kr"},{"t":"장애가정학생장학금","c":"장애인","o":"영암군미래교육재단","u":"해당없음","inc":"·  국민기초생활수급자 및 차상위계층","gpa":"해당없음","rs":"2026-04-13","re":"2026-05-12","b":"·  200만원 ·  부모 또는 본인이 장애 3등급 이상의 국민기초생활수급자 및 차상위계층·  전국 4년제 대학(전문대학)에 입학(재학)한 학생 ·  질병·입영·취업 등을 위해 휴학한 경우·  국가 또는 지방자치단체·공공단체 및 민간단체의 장학금·직장 학자금 등 타장학","url":"http://www.yeongam.go.kr"}];
+const REF = new Date("2026-01-10");
+const $ = s => document.querySelector(s);
+
+/* theme toggle */
+(function(){
+  const btn = $("#themebtn");
+  const root = document.documentElement;
+  btn.addEventListener("click", ()=>{
+    const cur = root.getAttribute("data-theme")
+      || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light");
+    root.setAttribute("data-theme", cur === "dark" ? "light":"dark");
+  });
+})();
+
+/* count-up */
+(function(){
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const els = document.querySelectorAll("[data-count]");
+  const run = el => {
+    const target = parseFloat(el.dataset.count), dec = parseInt(el.dataset.dec||"0");
+    const suf = el.dataset.suffix||"";
+    if(reduce){ el.textContent = target.toFixed(dec)+suf; return; }
+    const t0 = performance.now(), dur = 900;
+    const step = now => {
+      const p = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-p,3);
+      el.textContent = (target*e).toFixed(dec)+suf;
+      if(p<1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver((ents)=>{
+    ents.forEach(en=>{ if(en.isIntersecting){ run(en.target); io.unobserve(en.target);} });
+  },{threshold:.5});
+  els.forEach(el=>io.observe(el));
+})();
+
+/* reveal */
+(function(){
+  document.querySelectorAll("section .flag, section .cards, section .mini, section .skills, .demo").forEach(el=>el.classList.add("reveal"));
+  const io = new IntersectionObserver((ents)=>{
+    ents.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target);} });
+  },{threshold:.12});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+})();
+
+/* ---- scholarship demo ---- */
+(function(){
+  const CATS = [...new Set(SCHOLARSHIPS.map(s=>s.c))].filter(c=>c && c!=="해당없음");
+  const catBox = $("#cats"), results = $("#results"), stat = $("#stat"),
+        q = $("#q"), openonly = $("#openonly");
+  let active = new Set();
+
+  const allChip = mk("전체", true);
+  allChip.addEventListener("click", ()=>{ active.clear(); syncChips(); render(); });
+  catBox.appendChild(allChip);
+  CATS.forEach(c=>{
+    const ch = mk(c, false);
+    ch.addEventListener("click", ()=>{ active.has(c)?active.delete(c):active.add(c); syncChips(); render(); });
+    ch.dataset.cat = c; catBox.appendChild(ch);
+  });
+  function mk(label, pressed){
+    const b = document.createElement("button");
+    b.className="chip"; b.type="button"; b.textContent=label;
+    b.setAttribute("aria-pressed", pressed?"true":"false");
+    return b;
+  }
+  function syncChips(){
+    allChip.setAttribute("aria-pressed", active.size===0?"true":"false");
+    catBox.querySelectorAll("[data-cat]").forEach(ch=>{
+      ch.setAttribute("aria-pressed", active.has(ch.dataset.cat)?"true":"false");
+    });
+  }
+
+  function status(s){
+    if(!s.re) return {cls:"always", t:"상시"};
+    const end = new Date(s.re);
+    if(isNaN(end)) return {cls:"always", t:"상시"};
+    const days = Math.round((end-REF)/86400000);
+    if(days < 0) return {cls:"closed", t:"마감"};
+    if(days <= 7) return {cls:"soon", t:"마감임박 D-"+days};
+    return {cls:"open", t:"모집중 D-"+days};
+  }
+  const esc = s => (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  function render(){
+    const term = q.value.trim().toLowerCase();
+    let list = SCHOLARSHIPS.filter(s=>{
+      if(active.size && !active.has(s.c)) return false;
+      if(term){
+        const hay = (s.t+" "+s.o+" "+s.b+" "+s.gpa+" "+s.inc+" "+s.c+" "+s.u).toLowerCase();
+        if(!hay.includes(term)) return false;
+      }
+      return true;
+    }).map(s=>({s, st:status(s)}));
+    if(openonly.checked) list = list.filter(x=>x.st.cls==="open"||x.st.cls==="soon"||x.st.cls==="always");
+    const order = {soon:0, open:1, always:2, closed:3};
+    list.sort((a,b)=> order[a.st.cls]-order[b.st.cls]);
+
+    const openN = list.filter(x=>x.st.cls==="open"||x.st.cls==="soon").length;
+    stat.innerHTML = `<b>${list.length}</b>건 검색됨 · 모집중/임박 <b>${openN}</b>건`;
+
+    if(!list.length){ results.innerHTML = `<div class="empty">조건에 맞는 공고가 없습니다. 필터를 조정해 보세요.</div>`; return; }
+    results.innerHTML = list.slice(0,40).map(({s,st})=>{
+      const facets = [];
+      if(s.u && s.u!=="해당없음") facets.push(esc(s.u));
+      if(s.inc && s.inc!=="해당없음") facets.push("소득조건");
+      if(s.gpa && s.gpa!=="해당없음") facets.push("성적조건");
+      const url = /^https?:/.test(s.url) ? s.url : null;
+      const dates = (s.rs||"?")+" ~ "+(s.re||"?");
+      return `<article class="sch">
+        <div class="top">
+          <div><div class="name">${esc(s.t)}</div><div class="org">${esc(s.o)}</div></div>
+          <span class="pill ${st.cls}">${st.t}</span>
+        </div>
+        <div class="facets"><span class="f">${esc(s.c)}</span>${facets.map(f=>`<span class="f">${f}</span>`).join("")}</div>
+        <div class="ex">${esc(s.b)}…</div>
+        <div class="src">
+          <span class="dates">${dates}</span>
+          ${url?`<a href="${esc(url)}" target="_blank" rel="noopener">출처 ↗</a>`:`<span style="color:var(--faint)">출처 미상</span>`}
+        </div>
+      </article>`;
+    }).join("");
+  }
+  q.addEventListener("input", render);
+  openonly.addEventListener("change", render);
+  render();
+})();
+
+/* ---- giga chatd demo ---- */
+(function(){
+  const guessCategory = c=>{
+    if(/https?:\/\//i.test(c)) return "url";
+    if(/010[-\s]?\d{3,4}[-\s]?\d{4}|전화|연락처|폰|핸드폰|휴대폰|번호/.test(c)) return "contact";
+    if(/파일|\.pdf|\.png|\.zip|\.jpg|\.jpeg|\.gif|\.docx|\.xlsx|\.pptx|\.txt|\.csv/i.test(c)) return "file";
+    if(/지도|네이버지도|카카오맵|구글맵|주소|장소|위치/.test(c)) return "place";
+    if(/예약|일정|내일|오늘|모레|요일|날짜|월요일|화요일|수요일|목요일|금요일|토요일|일요일|시간|분에|까지|\d+시|\d+월|\d+일/.test(c)) return "schedule";
+    return "schedule";
+  };
+  const CATLABEL = {url:"URL", contact:"연락처", file:"파일", place:"장소", schedule:"일정"};
+  const esc = s => (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const pad = n => String(n).padStart(2,"0");
+  const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+  function parseWhen(text){
+    const now=new Date(); let day=new Date(now); day.setHours(0,0,0,0);
+    let hasDate=false, hasTime=false, h=null, min=0;
+    if(/모레/.test(text)){ day.setDate(day.getDate()+2); hasDate=true; }
+    else if(/내일/.test(text)){ day.setDate(day.getDate()+1); hasDate=true; }
+    else if(/오늘/.test(text)){ hasDate=true; }
+    const wd=["일","월","화","수","목","금","토"];
+    const wm=text.match(/([일월화수목금토])요일/);
+    if(wm){ let d=new Date(now); d.setHours(0,0,0,0); let add=(wd.indexOf(wm[1])-d.getDay()+7)%7; if(add===0) add=7; d.setDate(d.getDate()+add); day=d; hasDate=true; }
+    const md=text.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
+    if(md){ day=new Date(now); day.setMonth(+md[1]-1,+md[2]); day.setHours(0,0,0,0); hasDate=true; }
+    const tm=text.match(/(오전|오후|저녁|밤|아침)?\s*(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분)?/);
+    if(tm){ h=+tm[2]; min=tm[3]?+tm[3]:0; const mer=tm[1]; if((mer==="오후"||mer==="저녁"||mer==="밤")&&h<12) h+=12; if(mer==="오전"&&h===12) h=0; hasTime=true; }
+    const cm=text.match(/(\d{1,2}):(\d{2})/);
+    if(cm && !tm){ h=+cm[1]; min=+cm[2]; hasTime=true; }
+    if(!hasDate && !hasTime) return null;
+    const d=new Date(day); if(hasTime) d.setHours(h,min,0,0);
+    return {date:d, conf:(hasDate&&hasTime)?"high":"low"};
+  }
+
+  const memos=[];
+  const cmemo=$("#cmemo"), cstat=$("#cstat"), cmemosBox=$("#cmemos"), cex=$("#cex");
+  const EX=["내일 오후 6시 저녁 약속","금요일 3시 미용실 예약","010-1234-5678 김대리 번호","https://openai.com 나중에 읽기","발표자료.pdf 정리","강남역 2번 출구에서 만나기"];
+  EX.forEach(x=>{ const b=document.createElement("button"); b.className="chip"; b.type="button"; b.textContent=x.length>15?x.slice(0,14)+"…":x; b.title=x; b.addEventListener("click",()=>{ cmemo.value=x; save(); }); cex.appendChild(b); });
+
+  function save(){
+    const c=cmemo.value.trim(); if(!c) return;
+    const cat=guessCategory(c);
+    let when=null; if(cat==="schedule"){ const p=parseWhen(c); if(p && p.conf==="high") when=p.date; }
+    memos.unshift({c, cat, when, id:Date.now()});
+    const persona = when ? `일정으로 잡았다, 삣삐. ${fmt(when)} 에 넣어뒀다.` : `[${CATLABEL[cat]}]로 분류했다, 삣삐. 기억해뒀다.`;
+    cstat.innerHTML = `▸ ${esc(persona)}`;
+    cmemo.value=""; renderMemos();
+  }
+  function renderMemos(){
+    if(!memos.length){ cmemosBox.innerHTML=""; return; }
+    cmemosBox.innerHTML = memos.slice(0,12).map(m=>{
+      const pill = m.when ? `<span class="pill open">일정 ${fmt(m.when)}</span>` : `<span class="pill always">${CATLABEL[m.cat]}</span>`;
+      return `<article class="sch"><div class="top"><div class="name">${esc(m.c)}</div>${pill}</div>
+        <div class="facets"><span class="f">categoryId: ${m.cat}</span>${m.when?`<span class="f">meta.startAt ✓</span>`:""}</div></article>`;
+    }).join("");
+  }
+  cmemo.addEventListener("keydown", e=>{ if(e.key==="Enter") save(); });
+
+  /* SSRF guard (server logic mirrored) */
+  function ipv4Parts(ip){ const m=ip.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/); if(!m) return null; const p=m.slice(1).map(Number); return p.some(n=>n>255)?null:p; }
+  function isPrivateIp(ipRaw){
+    const mp=ipRaw.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i); const ip=mp?mp[1]:ipRaw; const v4=ipv4Parts(ip);
+    if(v4){ const [a,b]=v4; if(a===0||a===10||a===127) return true; if(a===169&&b===254) return true; if(a===172&&b>=16&&b<=31) return true; if(a===192&&b===168) return true; if(a===100&&b>=64&&b<=127) return true; return false; }
+    const lo=ip.toLowerCase(); if(lo==="::1"||lo==="::") return true; if(/^fe[89ab]/.test(lo)) return true; if(/^f[cd]/.test(lo)) return true; return false;
+  }
+  function checkUrl(s){
+    let u; try{ u=new URL(s); }catch{ return {ok:false, r:"invalid URL"}; }
+    if(u.protocol!=="http:"&&u.protocol!=="https:") return {ok:false, r:"blocked protocol: "+u.protocol};
+    const host=u.hostname.replace(/^\[|\]$/g,""); const lo=host.toLowerCase();
+    if(lo==="localhost"||lo.endsWith(".localhost")||lo.endsWith(".local")||lo.endsWith(".internal")) return {ok:false, r:"blocked host: local"};
+    const isIp = /^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.includes(":");
+    if(isIp){ if(isPrivateIp(host)) return {ok:false, r:"blocked private/loopback IP"}; return {ok:true, r:"공개 IP — 통과"}; }
+    return {ok:true, r:"공개 호스트명 — 통과 (서버에서 DNS 해석 후 각 홉 재검증)"};
+  }
+  const curl=$("#curl"), cssrf=$("#cssrf"), curlex=$("#curlex");
+  const URLEX=["http://169.254.169.254/latest/meta-data","http://localhost:8080","https://naver.com","ftp://example.com","http://192.168.0.1","https://github.com/Maroco0109"];
+  URLEX.forEach(x=>{ const b=document.createElement("button"); b.className="chip"; b.type="button"; b.textContent=x.replace(/^https?:\/\//,"").slice(0,20); b.title=x; b.addEventListener("click",()=>{ curl.value=x; runSsrf(); }); curlex.appendChild(b); });
+  function runSsrf(){
+    const s=curl.value.trim(); if(!s) return; const v=checkUrl(s);
+    cssrf.innerHTML = v.ok
+      ? `<span class="verdict ok">✓ ALLOW</span> — ${esc(v.r)}. 통과다, 삣삐.`
+      : `<span class="verdict no">✕ BLOCK</span> — ${esc(v.r)}. 차단했다, 삣삐.`;
+  }
+  curl.addEventListener("keydown", e=>{ if(e.key==="Enter") runSsrf(); });
+})();
+</script>

@@ -1,4 +1,4 @@
-<title>강지완 · AI Engineer — Agent / RAG / LLM</title>
+<title>Jiwan Kang · AI Engineer — Agent / RAG / LLM</title>
 <style>
   :root{
     --bg:#f6f8fb; --surface:#ffffff; --surface-2:#eef2f7; --surface-3:#e6ecf3;
@@ -51,7 +51,6 @@
   a{color:inherit}
   h1,h2,h3{text-wrap:balance; line-height:1.15; margin:0}
 
-  /* ---- mono utility labels ---- */
   .eyebrow{
     font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
     color:var(--signal); font-weight:600;
@@ -60,7 +59,6 @@
   .eyebrow::before{content:""; width:22px; height:1px; background:var(--signal); opacity:.7}
   .num{font-variant-numeric:tabular-nums; font-family:var(--mono)}
 
-  /* ---- top nav ---- */
   nav.top{
     position:sticky; top:0; z-index:50;
     background:color-mix(in srgb, var(--bg) 82%, transparent);
@@ -84,7 +82,6 @@
   .themebtn:hover{color:var(--ink); border-color:var(--line-strong)}
   @media (max-width:720px){ nav.top .links a.sec{display:none} }
 
-  /* ---- hero ---- */
   header.hero{padding:80px 0 40px; position:relative; overflow:hidden}
   header.hero .grid-bg{
     position:absolute; inset:0; pointer-events:none; opacity:.5;
@@ -119,7 +116,6 @@
   @media (prefers-color-scheme:dark){ .btn.primary{color:#04211d} }
   .btn.primary:hover{background:var(--signal-bright); border-color:var(--signal-bright); color:#04211d}
 
-  /* ---- telemetry strip ---- */
   .telemetry{
     margin-top:44px; border:1px solid var(--line); border-radius:12px; background:var(--surface);
     display:grid; grid-template-columns:repeat(5,1fr); overflow:hidden;
@@ -135,7 +131,6 @@
   @media (max-width:860px){ .telemetry{grid-template-columns:repeat(2,1fr)} .telemetry .cell:nth-child(2){border-right:none} .telemetry .cell{border-bottom:1px solid var(--line)} }
   @media (max-width:480px){ .telemetry{grid-template-columns:1fr} .telemetry .cell{border-right:none} }
 
-  /* ---- sections ---- */
   section{padding:64px 0; border-top:1px solid var(--line)}
   .sec-head{margin-bottom:34px}
   .sec-head h2{font-size:clamp(24px,4vw,34px); font-weight:800; letter-spacing:-.015em; margin-top:12px}
@@ -144,7 +139,6 @@
   .prose{color:var(--ink-2); max-width:68ch}
   .prose b{color:var(--ink)}
 
-  /* ---- flagship project ---- */
   .flag{border:1px solid var(--line); border-radius:16px; background:var(--surface); overflow:hidden}
   .flag .band{padding:24px 26px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, var(--surface-2), var(--surface))}
   .flag .band .title{display:flex; flex-wrap:wrap; align-items:baseline; gap:12px}
@@ -170,7 +164,6 @@
   }
   .callout b{color:var(--ink)}
 
-  /* ---- comparison table ---- */
   .tbl-scroll{overflow-x:auto; margin-top:20px; border:1px solid var(--line); border-radius:10px}
   table.cmp{border-collapse:collapse; width:100%; min-width:520px; font-size:14px}
   table.cmp th, table.cmp td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--line)}
@@ -181,7 +174,6 @@
   .best{color:var(--good); font-weight:700}
   .win{display:inline-block; margin-left:6px; font-size:10px; color:var(--good)}
 
-  /* ---- project cards ---- */
   .cards{display:grid; grid-template-columns:1fr 1fr; gap:18px}
   @media (max-width:760px){ .cards{grid-template-columns:1fr} }
   .card{border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:22px; display:flex; flex-direction:column; transition:border-color .15s, transform .15s}
@@ -194,7 +186,6 @@
   .card ul li::before{content:"›"; position:absolute; left:2px; color:var(--signal); font-family:var(--mono)}
   .card .foot{margin-top:auto; padding-top:16px}
 
-  /* ---- compact list ---- */
   .mini{display:grid; grid-template-columns:1fr 1fr; gap:12px}
   @media (max-width:680px){ .mini{grid-template-columns:1fr} }
   .mini .row{border:1px solid var(--line); border-radius:10px; padding:14px 16px; background:var(--surface)}
@@ -203,7 +194,6 @@
   .mini .row .yr{font-family:var(--mono); font-size:11px; color:var(--faint); white-space:nowrap}
   .mini .row p{margin:6px 0 0; font-size:13px; color:var(--muted)}
 
-  /* ---- skills matrix ---- */
   .skills{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
   @media (max-width:820px){ .skills{grid-template-columns:repeat(2,1fr)} }
   @media (max-width:460px){ .skills{grid-template-columns:1fr} }
@@ -212,7 +202,6 @@
   .skcol li{font-size:14px; color:var(--ink-2)}
   .skcol li span{font-family:var(--mono); font-size:11px; color:var(--faint); display:block}
 
-  /* ---- demo ---- */
   .demo{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--surface)}
   .demo .head{padding:18px 22px; border-bottom:1px solid var(--line); background:var(--surface-2); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px}
   .demo .head .t{font-family:var(--mono); font-size:13px; font-weight:700}
@@ -257,7 +246,6 @@
   .empty{grid-column:1/-1; text-align:center; color:var(--muted); font-family:var(--mono); font-size:13px; padding:34px}
   .demo .foot{padding:14px 22px; border-top:1px solid var(--line); font-size:12px; color:var(--faint)}
 
-  /* ---- contact ---- */
   .contact{display:grid; grid-template-columns:1fr 1fr; gap:14px}
   @media (max-width:640px){ .contact{grid-template-columns:1fr} }
   .contact a{
@@ -289,17 +277,17 @@
 
 <nav class="top">
   <div class="wrap row">
-    <div class="brand">강지완 <b>·</b> <span class="num">AI_ENG</span></div>
+    <div class="brand">Jiwan Kang <b>·</b> <span class="num">AI_ENG</span></div>
     <div class="links">
       <a class="sec" href="#about">about</a>
-      <a class="sec" href="#flagship">똑소리</a>
+      <a class="sec" href="#flagship">ddoksori</a>
       <a class="sec" href="#mcp">mcp_servers</a>
       <a class="sec" href="#skills">skills</a>
       <a class="sec" href="#demo">rag_demo</a>
       <a class="sec" href="#demo2">chatd_demo</a>
       <a class="sec" href="#contact">contact</a>
-      <a class="lang" href="en/">EN</a>
-      <button class="themebtn" id="themebtn" aria-label="테마 전환">◐ theme</button>
+      <a class="lang" href="../">한국어</a>
+      <button class="themebtn" id="themebtn" aria-label="Toggle theme">◐ theme</button>
     </div>
   </div>
 </nav>
@@ -308,42 +296,42 @@
   <div class="grid-bg"></div>
   <div class="wrap inner">
     <span class="eyebrow">AI Engineer · Agent / RAG / LLM Systems</span>
-    <h1><span class="ko">강지완</span> <span style="color:var(--muted); font-weight:300">Jiwan&nbsp;Kang</span></h1>
-    <div class="role">Agent · RAG · LLM 시스템을 <span style="color:var(--ink)">만들고, 측정하고, 근거로 판단합니다</span></div>
-    <p class="lede">좋은 AI 서비스는 좋은 모델이 아니라 <b>문제에 맞는 구조 설계</b>에서 나온다고 믿습니다.
-      멀티 에이전트 챗봇을 만든 뒤, <b>"이 구조가 정말 최선이었나"</b>를 스스로 검증하려 서로 다른 아키텍처를 동일 조건에서
-      측정·비교하는 시스템까지 구축했습니다.</p>
+    <h1><span class="ko">Jiwan Kang</span> <span style="color:var(--muted); font-weight:300">강지완</span></h1>
+    <div class="role">I build Agent · RAG · LLM systems — <span style="color:var(--ink)">then measure them and decide with evidence</span></div>
+    <p class="lede">I believe great AI products come from <b>the right architecture for the problem</b>, not just a good model.
+      After building a multi-agent chatbot, I built a system to <b>measure and compare different architectures under identical conditions</b> —
+      to verify whether my design was actually the best choice.</p>
     <div class="cta">
-      <a class="btn primary" href="#flagship">측정 시스템 보기 →</a>
+      <a class="btn primary" href="#flagship">See the measurement system →</a>
       <a class="btn" href="https://github.com/Maroco0109" target="_blank" rel="noopener">GitHub</a>
-      <a class="btn" href="#demo">라이브 데모 ▸</a>
+      <a class="btn" href="#demo">Live demos ▸</a>
     </div>
 
-    <div class="telemetry" aria-label="대표 지표">
+    <div class="telemetry" aria-label="Key metrics">
       <div class="cell">
-        <div class="k"><span class="dot live"></span>검색 품질</div>
+        <div class="k"><span class="dot live"></span>Retrieval</div>
         <div class="v" data-count="0.88" data-dec="2">0.88</div>
-        <div class="s">nDCG@10 (구조 A, 최고치)</div>
+        <div class="s">nDCG@10 (variant A, best)</div>
       </div>
       <div class="cell">
-        <div class="k"><span class="dot live"></span>응답 지연</div>
+        <div class="k"><span class="dot live"></span>Latency</div>
         <div class="v">−80<small style="font-size:16px">%</small></div>
-        <div class="s">60s→10s · 규칙기반+병렬화</div>
+        <div class="s">60s→10s · rule-based + parallel</div>
       </div>
       <div class="cell">
-        <div class="k"><span class="dot live"></span>보안 누출</div>
+        <div class="k"><span class="dot live"></span>Security leak</div>
         <div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div>
-        <div class="s">leak_rate (프롬프트·PII)</div>
+        <div class="s">leak_rate (prompt·PII)</div>
       </div>
       <div class="cell">
-        <div class="k"><span class="dot live"></span>라우팅 검증</div>
+        <div class="k"><span class="dot live"></span>Routing check</div>
         <div class="v" data-count="100" data-dec="0" data-suffix="%">100%</div>
-        <div class="s">A vs A-hub 결정 일치</div>
+        <div class="s">A vs A-hub decision match</div>
       </div>
       <div class="cell">
-        <div class="k"><span class="dot live"></span>산출물</div>
-        <div class="v"><span class="num">7</span><small> 프로젝트</small></div>
-        <div class="s">+ MCP 서버 2종 PlayMCP 라이브</div>
+        <div class="k"><span class="dot live"></span>Output</div>
+        <div class="v"><span class="num">7</span><small> projects</small></div>
+        <div class="s">+ 2 MCP servers live on PlayMCP</div>
       </div>
     </div>
   </div>
@@ -354,21 +342,21 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">01 · About</span>
-      <h2>기술을 만드는 사람을 넘어, 문제를 구조화하는 사람</h2>
+      <h2>More than someone who builds — someone who structures the problem</h2>
     </div>
-    <p class="prose">비정형 데이터 처리·파이프라인 설계, RAG 시스템과 LangGraph 기반 멀티 에이전트 시스템 구현을 경험했습니다.
-      같은 기술이라도 <b>도메인에 따라 적용 방식이 달라져야 한다</b>는 것을 프로젝트마다 체득했고,
-      최근에는 아키텍처 선택을 정성적 주장이 아니라 <b>측정된 숫자</b>로 증명하는 데 집중하고 있습니다.
-      "AI를 도입하자"가 아니라 <b>"이 방식이 이만큼 낫다"</b>를 근거와 함께 제시하는 것 — 그게 제가 일하는 방식입니다.</p>
+    <p class="prose">I've worked on unstructured-data processing and pipeline design, RAG systems, and LangGraph-based
+      multi-agent systems. Project after project taught me that <b>the same technique must be applied differently per domain</b>,
+      and lately I focus on proving architecture choices with <b>measured numbers</b> rather than qualitative claims.
+      Not "let's adopt AI," but <b>"this approach is better by this much"</b> — backed by evidence. That's how I work.</p>
     <div class="tagrow">
       <span class="tag sig">LangGraph MAS</span>
       <span class="tag sig">RAG · pgvector</span>
-      <span class="tag sig">A/B 측정 · 관측성</span>
-      <span class="tag">LLM 보안 · 가드레일</span>
-      <span class="tag">MCP 서버</span>
-      <span class="tag">PLM 파인튜닝 · ONNX</span>
+      <span class="tag sig">A/B measurement · observability</span>
+      <span class="tag">LLM security · guardrails</span>
+      <span class="tag">MCP servers</span>
+      <span class="tag">PLM fine-tuning · ONNX</span>
       <span class="tag">CI/CD · AWS · Docker</span>
-      <span class="tag">홍익대 컴퓨터공학 학사</span>
+      <span class="tag">B.S. Computer Science, Hongik Univ.</span>
     </div>
   </div>
 </section>
@@ -377,60 +365,62 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">02 · Flagship</span>
-      <h2>똑소리 — 만든 뒤, 측정한 챗봇</h2>
-      <p>소비자 분쟁조정 상담 챗봇(팀 5인, 2025.12~2026.02). 팀 단계에서 멀티 에이전트 RAG를 구축한 뒤,
-        개인 심화에서 <b>결정론 워크플로우(A)·자율 ReAct 에이전트(B)·LLM 라우팅(A-hub)</b>을 같은 백엔드에서 측정·비교했습니다.</p>
+      <h2>Ddoksori — the chatbot I built, then measured</h2>
+      <p>A consumer dispute-mediation counseling chatbot (team of 5, Dec 2025–Feb 2026). After building the multi-agent RAG
+        as a team, I extended it solo to measure and compare a <b>deterministic workflow (A), an autonomous ReAct agent (B), and LLM routing (A-hub)</b>
+        on the same backend.</p>
     </div>
 
     <div class="flag">
       <div class="band">
         <div class="title">
-          <h3>똑소리 · Agent/RAG/LLM 측정·비교 시스템</h3>
+          <h3>Ddoksori · Agent/RAG/LLM measurement &amp; comparison system</h3>
           <span class="meta">LangGraph · pgvector · Prometheus · Grafana · RunPod/vLLM</span>
         </div>
         <div class="tagrow">
           <span class="tag sig">Hub-Spoke MAS</span>
-          <span class="tag sig">Fan-out/Fan-in 병렬검색</span>
-          <span class="tag">Upstage 3단계 청킹</span>
-          <span class="tag">Input/Output 가드레일</span>
-          <span class="tag">PII 마스킹</span>
-          <span class="tag">OWASP CI 리뷰</span>
-          <span class="tag">EXAONE 4.5-33B 자체호스팅</span>
+          <span class="tag sig">Fan-out/Fan-in retrieval</span>
+          <span class="tag">Upstage 3-stage chunking</span>
+          <span class="tag">Input/Output guardrails</span>
+          <span class="tag">PII masking</span>
+          <span class="tag">OWASP CI review</span>
+          <span class="tag">EXAONE 4.5-33B self-hosted</span>
         </div>
       </div>
       <div class="body">
-        <div class="callout"><b>인지 → 개선.</b> 팀 단계에선 "MAS가 정말 MAS로 동작하는가"를 검증할 측정 수단이 없었습니다.
-          개인 심화에서 서로 다른 아키텍처를 <b>동일 조건에서 측정·모니터링하는 시스템</b>으로 발전시켜, 포트폴리오 가치를 숫자로 증명했습니다.</div>
+        <div class="callout"><b>Awareness → improvement.</b> As a team, we had no way to verify whether the "MAS" actually behaved like one.
+          Solo, I turned it into a system that <b>measures and monitors different architectures under identical conditions</b> — proving portfolio value in numbers.</div>
 
         <div class="metric-grid">
-          <div class="metric up"><div class="k">응답 지연</div><div class="v">60s→10s</div><div class="d">에이전트 LLM추론→규칙기반 + Fan-out/in 병렬검색, −80%</div></div>
+          <div class="metric up"><div class="k">Latency</div><div class="v">60s→10s</div><div class="d">agent LLM inference → rule-based + Fan-out/in retrieval, −80%</div></div>
           <div class="metric flat"><div class="k">nDCG@10 (A)</div><div class="v" data-count="0.88" data-dec="2">0.88</div><div class="d">B-frontier 0.71 / B-exaone 0.55</div></div>
           <div class="metric flat"><div class="k">safety pass (A)</div><div class="v" data-count="1.00" data-dec="2">1.00</div><div class="d">B-frontier 0.83 / B-exaone 0.78</div></div>
-          <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">3종 전부 시스템프롬프트·PII 0%</div></div>
+          <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">all 3 variants: system-prompt·PII 0%</div></div>
         </div>
 
-        <p class="prose" style="margin-top:22px">측정 백본은 직접 구축했습니다. 요청 단위로 <b>DB 5테이블</b>(runs·steps·retrieval·llm_calls·guardrail)에
-          적재해 A/B를 SQL로 비교하고, <b>Prometheus /metrics</b>(variant 라벨) + <b>Grafana 대시보드</b>로 p95 지연·에러율·가드레일 차단율을 실시간 관측했습니다.</p>
+        <p class="prose" style="margin-top:22px">I built the measurement backbone myself: per-request logging into <b>5 DB tables</b>
+          (runs·steps·retrieval·llm_calls·guardrail) to compare A/B in SQL, plus <b>Prometheus /metrics</b> (variant labels)
+          + <b>Grafana dashboards</b> for live p95 latency, error rate, and guardrail block rate.</p>
 
         <div class="tbl-scroll">
           <table class="cmp">
             <thead>
-              <tr><th>지표</th><th>A · 결정론</th><th>B · ReAct agent</th><th>A-hub · LLM 라우팅</th></tr>
+              <tr><th>Metric</th><th>A · deterministic</th><th>B · ReAct agent</th><th>A-hub · LLM routing</th></tr>
             </thead>
             <tbody>
-              <tr><th>검색 nDCG@10</th><td class="best">0.88 <span class="win">▲</span></td><td>0.71</td><td>—</td></tr>
-              <tr><th>답변 faithfulness</th><td class="best">2.00 <span class="win">▲</span></td><td>1.92</td><td>—</td></tr>
-              <tr><th>지연 median</th><td>10.2s</td><td class="best">6.4s <span class="win">▲</span></td><td>18.9s</td></tr>
-              <tr><th>보안 decided pass</th><td class="best">100% <span class="win">▲</span></td><td>96.0%</td><td>—</td></tr>
-              <tr><th>라우팅 결정 일치</th><td>기준</td><td>—</td><td>100% (+74% 지연)</td></tr>
+              <tr><th>Retrieval nDCG@10</th><td class="best">0.88 <span class="win">▲</span></td><td>0.71</td><td>—</td></tr>
+              <tr><th>Answer faithfulness</th><td class="best">2.00 <span class="win">▲</span></td><td>1.92</td><td>—</td></tr>
+              <tr><th>Latency median</th><td>10.2s</td><td class="best">6.4s <span class="win">▲</span></td><td>18.9s</td></tr>
+              <tr><th>Security decided pass</th><td class="best">100% <span class="win">▲</span></td><td>96.0%</td><td>—</td></tr>
+              <tr><th>Routing decision match</th><td>baseline</td><td>—</td><td>100% (+74% latency)</td></tr>
             </tbody>
           </table>
         </div>
 
-        <div class="callout" style="margin-bottom:0"><b>결론 — "agentic이 항상 정답은 아니다"를 데이터로 증명.</b>
-          도메인 핵심 축(안전·보안·충실성·검색 랭킹)은 A(결정론)가, 속도·유연성은 B(agent)가 우세.
-          A-hub 측정으로 "선형 파이프라인에서 LLM 라우팅은 결정을 100% 재현하면서 지연만 +74%"임을 확인해 A 동결의 정당성을 입증했습니다.
-          <span style="color:var(--muted)">(Anthropic "Building Effective Agents"의 workflow vs agent 교훈과 일치.)</span></div>
+        <div class="callout" style="margin-bottom:0"><b>Conclusion — proving with data that "agentic isn't always the answer."</b>
+          The domain-critical axes (safety, security, faithfulness, retrieval ranking) favor A (deterministic); speed and flexibility favor B (agent).
+          The A-hub measurement showed that in a linear pipeline, LLM routing reproduces 100% of decisions while adding +74% latency — justifying freezing A.
+          <span style="color:var(--muted)">(Matches the workflow-vs-agent lesson in Anthropic's "Building Effective Agents.")</span></div>
       </div>
     </div>
   </div>
@@ -440,39 +430,41 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">03 · MCP Servers</span>
-      <h2>프로덕션 MCP 서버 2종 (개인)</h2>
-      <p>떠오르는 <b>MCP 기반 에이전트 생태계</b>를 직접 이해하려 카카오 PlayMCP용 원격 MCP 서버를 혼자 설계·구현했습니다.
-        TypeScript + <span class="num">@modelcontextprotocol/sdk</span> + Express, Streamable HTTP(stateless). <b>둘 다 카카오 PlayMCP에 라이브 등록</b>되어 실제 카카오 AI 채팅에서 동작합니다.</p>
+      <h2>Two production MCP servers (solo)</h2>
+      <p>To understand the emerging <b>MCP-based agent ecosystem</b> first-hand, I designed and built two remote MCP servers for
+        Kakao PlayMCP on my own. TypeScript + <span class="num">@modelcontextprotocol/sdk</span> + Express, Streamable HTTP (stateless).
+        <b>Both are registered live on Kakao PlayMCP</b> and run inside Kakao's AI chat.</p>
     </div>
     <div class="cards">
       <div class="card">
-        <span class="kind">RAG · 공공데이터 · read-only</span>
+        <span class="kind">RAG · public data · read-only</span>
         <h3>who-will-notify</h3>
-        <p>한국장학재단·공공데이터포털의 장학금 공고 약 1,000건을 컨텍스트화해, 자연어 질문에 <b>출처와 함께</b> 답하는 MCP 서버.
-          지어내지 않고 실데이터에만 근거합니다.</p>
+        <p>An MCP server that contextualizes ~1,000 scholarship listings from Korea's public data portal and answers
+          natural-language questions <b>with sources</b> — grounded strictly in real data, never fabricated.</p>
         <ul>
-          <li>repo-as-DB + GitHub Actions 주간 크론 동기화</li>
-          <li>안전 게이트: 에러봉투 reject · 완전성 검증 · 크기 상한</li>
-          <li>런타임 fetch 실패 시 이미지 베이크 <b>stale-serve 폴백</b></li>
-          <li>serviceKey 키 격리(런타임 서버엔 키 불필요)</li>
+          <li>repo-as-DB + weekly GitHub Actions cron sync</li>
+          <li>Safety gates: reject error envelopes · completeness check · size cap</li>
+          <li><b>stale-serve fallback</b> baked into the image on fetch failure</li>
+          <li>serviceKey isolation (runtime server needs no key)</li>
         </ul>
         <div class="foot" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
-          <a class="livecta" href="https://playmcp.kakao.com/mcp/67984437027092378" target="_blank" rel="noopener"><span class="dot live"></span>PlayMCP 라이브 ↗</a>
-          <span class="tag sig">데모 데이터 소스 ↓</span>
+          <a class="livecta" href="https://playmcp.kakao.com/mcp/67984437027092378" target="_blank" rel="noopener"><span class="dot live"></span>Live on PlayMCP ↗</a>
+          <span class="tag sig">demo data source ↓</span>
         </div>
       </div>
       <div class="card">
-        <span class="kind">Persona · 도구 · security</span>
+        <span class="kind">Persona · tools · security</span>
         <h3>Giga ChatD</h3>
-        <p>메모·일정·URL을 관리하는 페르소나형 MCP 서버. 호스트가 지시문을 무시해도 페르소나를 유지하도록 2갈래 주입 설계.</p>
+        <p>A persona-driven MCP server for notes, schedules, and links. Two-pronged persona injection keeps character
+          even when the host ignores instructions.</p>
         <ul>
-          <li><b>SSRF 가드</b>: http/https만 허용, 사설·루프백·링크로컬 IP 차단</li>
-          <li>리다이렉트 홉 수동 검증 · 응답 200KB·8초 제한</li>
-          <li>KST 자연어 일정 파싱(startAt 우선)</li>
-          <li>PlayMCP 규정 annotations(readOnly/destructive) 전 도구 정의</li>
+          <li><b>SSRF guard</b>: http/https only, blocks private·loopback·link-local IPs</li>
+          <li>Manual redirect-hop validation · 200KB·8s response caps</li>
+          <li>KST natural-language schedule parsing (startAt first)</li>
+          <li>Full annotations (readOnly/destructive) per PlayMCP rules</li>
         </ul>
         <div class="foot" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
-          <a class="livecta" href="https://playmcp.kakao.com/mcp/67820257296853889" target="_blank" rel="noopener"><span class="dot live"></span>PlayMCP 라이브 ↗</a>
+          <a class="livecta" href="https://playmcp.kakao.com/mcp/67820257296853889" target="_blank" rel="noopener"><span class="dot live"></span>Live on PlayMCP ↗</a>
           <span class="tag">TS · Express · SSRF</span>
         </div>
       </div>
@@ -484,14 +476,14 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">04 · More Work</span>
-      <h2>그 외 프로젝트</h2>
-      <p>NLP 기초부터 프로덕션 LLM 서비스까지 단계적으로 역량을 확장해 왔습니다.</p>
+      <h2>Other projects</h2>
+      <p>Expanding from NLP fundamentals to production LLM services, step by step.</p>
     </div>
     <div class="mini">
-      <div class="row"><div class="h"><span class="t">Unigo — 전공 추천 챗봇</span><span class="yr">2025.10–12</span></div><p>LangGraph ReAct 단일 에이전트 + RAG. MySQL(정형)·Pinecone(벡터) Dual-Store 설계, 학과 매핑 전략.</p></div>
-      <div class="row"><div class="h"><span class="t">SMS-Filtering — 한국어 PLM 비교</span><span class="yr">2024.09–2025.07</span></div><p>KoBERT·KoELECTRA·RoBERTa 파인튜닝 비교, F1 0.9997. ONNX INT8 양자화로 모바일 경량화.</p></div>
-      <div class="row"><div class="h"><span class="t">Malicious URL — 악성 URL 분석</span><span class="yr">2025.06–07</span></div><p>IDN/WHOIS/HTML·JS 다층 수집 + 단계별 점수 + LLM 앙상블 종합 판단 파이프라인.</p></div>
-      <div class="row"><div class="h"><span class="t">암 환자 생존 분석</span><span class="yr">2025.09</span></div><p>DeepHit 기반 경쟁위험 생존 분석, C-index 0.91. 과적합 진단 후 구조 재선택.</p></div>
+      <div class="row"><div class="h"><span class="t">Unigo — major recommender chatbot</span><span class="yr">2025.10–12</span></div><p>LangGraph ReAct single agent + RAG. MySQL (structured) · Pinecone (vector) dual-store, department-mapping strategy.</p></div>
+      <div class="row"><div class="h"><span class="t">SMS-Filtering — Korean PLM comparison</span><span class="yr">2024.09–2025.07</span></div><p>Fine-tuned &amp; compared KoBERT·KoELECTRA·RoBERTa, F1 0.9997. ONNX INT8 quantization for on-device.</p></div>
+      <div class="row"><div class="h"><span class="t">Malicious URL — phishing analysis</span><span class="yr">2025.06–07</span></div><p>Multi-layer IDN/WHOIS/HTML·JS collection + staged scoring + LLM-ensemble judgment pipeline.</p></div>
+      <div class="row"><div class="h"><span class="t">Cancer survival analysis</span><span class="yr">2025.09</span></div><p>DeepHit competing-risks survival analysis, C-index 0.91. Re-selected the architecture after diagnosing overfitting.</p></div>
     </div>
   </div>
 </section>
@@ -500,43 +492,43 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">05 · Skills</span>
-      <h2>기술 역량</h2>
+      <h2>Technical skills</h2>
     </div>
     <div class="skills">
       <div class="skcol">
         <h4>LLM / Agent</h4>
         <ul>
-          <li>LangGraph <span>MAS·ReAct 설계, Fan-out/in</span></li>
-          <li>LangChain <span>도구 바인딩·상태관리</span></li>
-          <li>RAG <span>도메인별 검색 전략 분리</span></li>
-          <li>MCP <span>프로덕션 서버 2종</span></li>
+          <li>LangGraph <span>MAS·ReAct design, Fan-out/in</span></li>
+          <li>LangChain <span>tool binding·state</span></li>
+          <li>RAG <span>per-domain retrieval strategy</span></li>
+          <li>MCP <span>2 production servers</span></li>
         </ul>
       </div>
       <div class="skcol">
         <h4>Data / Model</h4>
         <ul>
-          <li>pgvector <span>하이브리드 검색·RRF</span></li>
-          <li>Pinecone <span>Serverless Dual-Store</span></li>
-          <li>PLM 파인튜닝 <span>KoBERT/ELECTRA/RoBERTa</span></li>
-          <li>ONNX <span>INT8 양자화 경량화</span></li>
+          <li>pgvector <span>hybrid search·RRF</span></li>
+          <li>Pinecone <span>Serverless dual-store</span></li>
+          <li>PLM fine-tuning <span>KoBERT/ELECTRA/RoBERTa</span></li>
+          <li>ONNX <span>INT8 quantization</span></li>
         </ul>
       </div>
       <div class="skcol">
-        <h4>보안 / 측정</h4>
+        <h4>Security / Measurement</h4>
         <ul>
-          <li>가드레일 <span>Moderation·프롬프트 인젝션</span></li>
-          <li>SSRF·PII <span>방어·자동 마스킹</span></li>
-          <li>OWASP CI <span>Claude 코드리뷰 자동화</span></li>
-          <li>관측성 <span>Prometheus·Grafana·LangSmith</span></li>
+          <li>Guardrails <span>moderation·prompt injection</span></li>
+          <li>SSRF·PII <span>defense·auto-masking</span></li>
+          <li>OWASP CI <span>automated Claude code review</span></li>
+          <li>Observability <span>Prometheus·Grafana·LangSmith</span></li>
         </ul>
       </div>
       <div class="skcol">
         <h4>Infra / Lang</h4>
         <ul>
-          <li>Python <span>7개 프로젝트 핵심</span></li>
-          <li>TypeScript <span>MCP 서버</span></li>
+          <li>Python <span>core of 7 projects</span></li>
+          <li>TypeScript <span>MCP servers</span></li>
           <li>Docker·AWS <span>Compose·EC2/RDS</span></li>
-          <li>GitHub Actions <span>CI/CD·크론</span></li>
+          <li>GitHub Actions <span>CI/CD·cron</span></li>
         </ul>
       </div>
     </div>
@@ -547,28 +539,29 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">06 · Live Demo · RAG</span>
-      <h2>장학금 검색 — RAG 데이터 레이어</h2>
-      <p><b>who-will-notify</b>는 카카오 PlayMCP에 라이브로 떠 있어, 카카오 AI 채팅에서 자연어로 바로 물어볼 수 있습니다.
-        아래는 로그인 없이 체험하도록, 실제 공개데이터(공공누리 제1유형) 90건 스냅샷 위에서 검색·<b>facet 필터</b>·모집상태 로직을 브라우저에 재현한 미리보기입니다.</p>
+      <h2>Scholarship search — the RAG data layer</h2>
+      <p><b>who-will-notify</b> runs live on Kakao PlayMCP — you can ask it in natural language inside Kakao's AI chat.
+        Below is a login-free preview that reproduces the search, <b>facet filters</b>, and status logic over a 90-item snapshot
+        of the real public data (Korea Public Nuri type-1).</p>
       <div class="ctarow">
-        <a class="livecta" href="https://playmcp.kakao.com/mcp/67984437027092378" target="_blank" rel="noopener"><span class="dot live"></span>카카오 PlayMCP에서 실제로 써보기 ↗</a>
-        <span class="ctanote">↓ 로그인 없는 브라우저 미리보기</span>
+        <a class="livecta" href="https://playmcp.kakao.com/mcp/67984437027092378" target="_blank" rel="noopener"><span class="dot live"></span>Try it live on Kakao PlayMCP ↗</a>
+        <span class="ctanote">↓ login-free browser preview</span>
       </div>
     </div>
 
     <div class="demo">
       <div class="head">
         <div class="t"><b>find_scholarships</b>() · who-will-notify</div>
-        <div class="snap">snapshot · 기준일 2026-01-10 · n=<span id="total">90</span></div>
+        <div class="snap">snapshot · ref 2026-01-10 · n=<span id="total">90</span></div>
       </div>
       <div class="controls">
-        <input type="text" id="q" placeholder="검색: 반도체, 소득, 지역, 장애, 예체능, 성적…" autocomplete="off" aria-label="장학금 검색">
-        <div class="chips" id="cats" role="group" aria-label="유형 필터"></div>
-        <label class="toggle"><input type="checkbox" id="openonly"> 모집중만 보기</label>
+        <input type="text" id="q" placeholder="search (matches Korean data) — try: merit, income, regional, disability, talent" autocomplete="off" aria-label="Search scholarships">
+        <div class="chips" id="cats" role="group" aria-label="Category filter"></div>
+        <label class="toggle"><input type="checkbox" id="openonly"> Open only</label>
       </div>
       <div class="stat" id="stat"></div>
       <div class="results" id="results"></div>
-      <div class="foot">데이터: 한국장학재단 / 공공데이터포털 · 공공누리 제1유형(출처표시). 데모용 90건 스냅샷 · 원본 서버는 약 1,000건을 서빙.</div>
+      <div class="foot">Data: Korea Scholarship Foundation / public data portal · Public Nuri type-1 (attribution). 90-item demo snapshot · the live server serves ~1,000. Listings are in Korean (real government data).</div>
     </div>
   </div>
 </section>
@@ -577,40 +570,40 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">07 · Live Demo · Agent Tools</span>
-      <h2>Giga ChatD — 메모·일정 에이전트</h2>
-      <p><b>Giga ChatD</b>도 카카오 PlayMCP에 라이브입니다 — 카카오 AI 채팅에서 CHAD와 실제로 대화하며 메모·일정·URL을 관리할 수 있습니다.
-        아래는 로그인 없이 체험하도록, 서버의 자동 분류 규칙 · KST 일정 파싱 · SSRF 가드 로직을 그대로 브라우저에 재현한 미리보기입니다.</p>
+      <h2>Giga ChatD — notes &amp; schedule agent</h2>
+      <p><b>Giga ChatD</b> is live on Kakao PlayMCP too — chat with the <b>CHAD</b> persona to manage notes, schedules, and links.
+        Below is a login-free, English-adapted reproduction of the server's rule engine: auto-classification, schedule parsing, and the SSRF guard.</p>
       <div class="ctarow">
-        <a class="livecta" href="https://playmcp.kakao.com/mcp/67820257296853889" target="_blank" rel="noopener"><span class="dot live"></span>카카오 PlayMCP에서 CHAD와 대화하기 ↗</a>
-        <span class="ctanote">↓ 로그인 없는 브라우저 미리보기</span>
+        <a class="livecta" href="https://playmcp.kakao.com/mcp/67820257296853889" target="_blank" rel="noopener"><span class="dot live"></span>Chat with CHAD on Kakao PlayMCP ↗</a>
+        <span class="ctanote">↓ login-free browser preview</span>
       </div>
     </div>
 
     <div class="demo">
       <div class="head">
         <div class="t"><b>save_memo</b>() · Giga ChatD</div>
-        <div class="snap">persona: CHAD · 호칭: 삣삐</div>
+        <div class="snap">persona: CHAD</div>
       </div>
       <div class="controls">
-        <input type="text" id="cmemo" placeholder="예: 내일 오후 6시 저녁 약속 / 010-1234-5678 김대리 / https://openai.com" autocomplete="off" aria-label="메모 입력">
-        <div class="chips" id="cex" role="group" aria-label="예시"></div>
+        <input type="text" id="cmemo" placeholder="e.g., dinner with team tomorrow 6pm / call John 555-123-4567 / https://openai.com" autocomplete="off" aria-label="Enter a memo">
+        <div class="chips" id="cex" role="group" aria-label="Examples"></div>
       </div>
-      <div class="stat" id="cstat" style="min-height:20px">메모를 입력하고 Enter. CHAD가 분류해준다, 삣삐.</div>
+      <div class="stat" id="cstat" style="min-height:20px">Type a memo and hit Enter. CHAD will sort it.</div>
       <div class="results" id="cmemos"></div>
-      <div class="foot">자동 분류 우선순위: url › contact › file › place › schedule. 날짜+시각이 모두 잡히면 확정 일정으로 절대 시각(ISO)을 부여.</div>
+      <div class="foot">Auto-classification priority: url › contact › file › place › schedule. When both date and time are found, it's stored as a confirmed schedule with an absolute (ISO) time.</div>
     </div>
 
     <div class="demo" style="margin-top:18px">
       <div class="head">
-        <div class="t"><b>analyze_url</b>() · SSRF 가드</div>
-        <div class="snap">http/https만 · 사설·루프백·링크로컬 IP 차단</div>
+        <div class="t"><b>analyze_url</b>() · SSRF guard</div>
+        <div class="snap">http/https only · blocks private·loopback·link-local IPs</div>
       </div>
       <div class="controls">
-        <input type="text" id="curl" placeholder="URL 검사: http://169.254.169.254/latest/meta-data" autocomplete="off" aria-label="URL 검사">
-        <div class="chips" id="curlex" role="group" aria-label="예시 URL"></div>
+        <input type="text" id="curl" placeholder="check a URL: http://169.254.169.254/latest/meta-data" autocomplete="off" aria-label="Check a URL">
+        <div class="chips" id="curlex" role="group" aria-label="Example URLs"></div>
       </div>
-      <div class="stat" id="cssrf" style="min-height:20px">URL을 넣어봐라, 삣삐. 공개 대상만 통과시킨다.</div>
-      <div class="foot">서버는 리다이렉트 각 홉을 다시 검증하고 호스트명은 DNS 해석 후 재확인합니다(브라우저 데모는 프로토콜·로컬 접미사·리터럴 IP까지 검사).</div>
+      <div class="stat" id="cssrf" style="min-height:20px">Drop a URL. Only public targets pass.</div>
+      <div class="foot">The server re-validates every redirect hop and re-resolves hostnames via DNS (this browser demo checks protocol, local suffixes, and literal IPs).</div>
     </div>
   </div>
 </section>
@@ -619,13 +612,13 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">08 · Contact</span>
-      <h2>연락 · 링크</h2>
+      <h2>Contact · links</h2>
     </div>
     <div class="contact">
       <a href="mailto:maroco1215@gmail.com"><span><span class="l">Email</span><span class="v">maroco1215@gmail.com</span></span><span class="arw">→</span></a>
       <a href="https://github.com/Maroco0109" target="_blank" rel="noopener"><span><span class="l">GitHub</span><span class="v">github.com/Maroco0109</span></span><span class="arw">→</span></a>
-      <a href="https://github.com/SKN19-FINAL-5team/LLM" target="_blank" rel="noopener"><span><span class="l">똑소리 Repo</span><span class="v">SKN19-FINAL-5team / LLM</span></span><span class="arw">→</span></a>
-      <a href="https://www.linkedin.com/in/%EC%A7%80%EC%99%84-%EA%B0%95-335909375/" target="_blank" rel="noopener"><span><span class="l">LinkedIn</span><span class="v">지완 강</span></span><span class="arw">→</span></a>
+      <a href="https://github.com/SKN19-FINAL-5team/LLM" target="_blank" rel="noopener"><span><span class="l">Ddoksori Repo</span><span class="v">SKN19-FINAL-5team / LLM</span></span><span class="arw">→</span></a>
+      <a href="https://www.linkedin.com/in/%EC%A7%80%EC%99%84-%EA%B0%95-335909375/" target="_blank" rel="noopener"><span><span class="l">LinkedIn</span><span class="v">Jiwan Kang</span></span><span class="arw">→</span></a>
     </div>
   </div>
 </section>
@@ -633,7 +626,7 @@
 
 <footer>
   <div class="wrap r">
-    <span>강지완 · Jiwan Kang — AI Engineer</span>
+    <span>Jiwan Kang · 강지완 — AI Engineer</span>
     <span class="num">portfolio · 2026</span>
   </div>
 </footer>
@@ -687,16 +680,18 @@ const $ = s => document.querySelector(s);
 
 /* ---- scholarship demo ---- */
 (function(){
+  const CATMAP = {"성적우수":"Merit","소득구분":"Income-based","지역연고":"Regional","특기자":"Talent","장애인":"Disability","기타":"Other","해당없음":"N/A"};
+  const catLabel = c => CATMAP[c] || c;
   const CATS = [...new Set(SCHOLARSHIPS.map(s=>s.c))].filter(c=>c && c!=="해당없음");
   const catBox = $("#cats"), results = $("#results"), stat = $("#stat"),
         q = $("#q"), openonly = $("#openonly");
   let active = new Set();
 
-  const allChip = mk("전체", true);
+  const allChip = mk("All", true);
   allChip.addEventListener("click", ()=>{ active.clear(); syncChips(); render(); });
   catBox.appendChild(allChip);
   CATS.forEach(c=>{
-    const ch = mk(c, false);
+    const ch = mk(catLabel(c), false);
     ch.addEventListener("click", ()=>{ active.has(c)?active.delete(c):active.add(c); syncChips(); render(); });
     ch.dataset.cat = c; catBox.appendChild(ch);
   });
@@ -714,13 +709,13 @@ const $ = s => document.querySelector(s);
   }
 
   function status(s){
-    if(!s.re) return {cls:"always", t:"상시"};
+    if(!s.re) return {cls:"always", t:"Always open"};
     const end = new Date(s.re);
-    if(isNaN(end)) return {cls:"always", t:"상시"};
+    if(isNaN(end)) return {cls:"always", t:"Always open"};
     const days = Math.round((end-REF)/86400000);
-    if(days < 0) return {cls:"closed", t:"마감"};
-    if(days <= 7) return {cls:"soon", t:"마감임박 D-"+days};
-    return {cls:"open", t:"모집중 D-"+days};
+    if(days < 0) return {cls:"closed", t:"Closed"};
+    if(days <= 7) return {cls:"soon", t:"Closing D-"+days};
+    return {cls:"open", t:"Open D-"+days};
   }
   const esc = s => (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
@@ -729,7 +724,7 @@ const $ = s => document.querySelector(s);
     let list = SCHOLARSHIPS.filter(s=>{
       if(active.size && !active.has(s.c)) return false;
       if(term){
-        const hay = (s.t+" "+s.o+" "+s.b+" "+s.gpa+" "+s.inc+" "+s.c+" "+s.u).toLowerCase();
+        const hay = (s.t+" "+s.o+" "+s.b+" "+s.gpa+" "+s.inc+" "+s.c+" "+s.u+" "+catLabel(s.c)).toLowerCase();
         if(!hay.includes(term)) return false;
       }
       return true;
@@ -739,14 +734,14 @@ const $ = s => document.querySelector(s);
     list.sort((a,b)=> order[a.st.cls]-order[b.st.cls]);
 
     const openN = list.filter(x=>x.st.cls==="open"||x.st.cls==="soon").length;
-    stat.innerHTML = `<b>${list.length}</b>건 검색됨 · 모집중/임박 <b>${openN}</b>건`;
+    stat.innerHTML = `<b>${list.length}</b> results · <b>${openN}</b> open/closing`;
 
-    if(!list.length){ results.innerHTML = `<div class="empty">조건에 맞는 공고가 없습니다. 필터를 조정해 보세요.</div>`; return; }
+    if(!list.length){ results.innerHTML = `<div class="empty">No scholarships match. Adjust the filters.</div>`; return; }
     results.innerHTML = list.slice(0,40).map(({s,st})=>{
       const facets = [];
       if(s.u && s.u!=="해당없음") facets.push(esc(s.u));
-      if(s.inc && s.inc!=="해당없음") facets.push("소득조건");
-      if(s.gpa && s.gpa!=="해당없음") facets.push("성적조건");
+      if(s.inc && s.inc!=="해당없음") facets.push("Income req");
+      if(s.gpa && s.gpa!=="해당없음") facets.push("GPA req");
       const url = /^https?:/.test(s.url) ? s.url : null;
       const dates = (s.rs||"?")+" ~ "+(s.re||"?");
       return `<article class="sch">
@@ -754,11 +749,11 @@ const $ = s => document.querySelector(s);
           <div><div class="name">${esc(s.t)}</div><div class="org">${esc(s.o)}</div></div>
           <span class="pill ${st.cls}">${st.t}</span>
         </div>
-        <div class="facets"><span class="f">${esc(s.c)}</span>${facets.map(f=>`<span class="f">${f}</span>`).join("")}</div>
+        <div class="facets"><span class="f">${esc(catLabel(s.c))}</span>${facets.map(f=>`<span class="f">${f}</span>`).join("")}</div>
         <div class="ex">${esc(s.b)}…</div>
         <div class="src">
           <span class="dates">${dates}</span>
-          ${url?`<a href="${esc(url)}" target="_blank" rel="noopener">출처 ↗</a>`:`<span style="color:var(--faint)">출처 미상</span>`}
+          ${url?`<a href="${esc(url)}" target="_blank" rel="noopener">source ↗</a>`:`<span style="color:var(--faint)">no source</span>`}
         </div>
       </article>`;
     }).join("");
@@ -768,17 +763,17 @@ const $ = s => document.querySelector(s);
   render();
 })();
 
-/* ---- giga chatd demo ---- */
+/* ---- giga chatd demo (English-adapted) ---- */
 (function(){
   const guessCategory = c=>{
     if(/https?:\/\//i.test(c)) return "url";
-    if(/010[-\s]?\d{3,4}[-\s]?\d{4}|전화|연락처|폰|핸드폰|휴대폰|번호/.test(c)) return "contact";
-    if(/파일|\.pdf|\.png|\.zip|\.jpg|\.jpeg|\.gif|\.docx|\.xlsx|\.pptx|\.txt|\.csv/i.test(c)) return "file";
-    if(/지도|네이버지도|카카오맵|구글맵|주소|장소|위치/.test(c)) return "place";
-    if(/예약|일정|내일|오늘|모레|요일|날짜|월요일|화요일|수요일|목요일|금요일|토요일|일요일|시간|분에|까지|\d+시|\d+월|\d+일/.test(c)) return "schedule";
+    if(/(\+?\d{2,4}[-.\s]\d{3,4}[-.\s]\d{4})|phone|contact|\btel\b|\bcall\b|\bnumber\b/i.test(c)) return "contact";
+    if(/\.(pdf|png|zip|jpe?g|gif|docx?|xlsx?|pptx?|txt|csv)\b|\bfile\b|attachment/i.test(c)) return "file";
+    if(/\bmap\b|address|location|street|station|\bcafe\b|café|restaurant|\bexit\b/i.test(c)) return "place";
+    if(/tomorrow|today|tonight|meeting|appointment|reminder|\bmon(day)?\b|\btue(s|sday)?\b|\bwed(nesday)?\b|\bthu(r|rs|rsday)?\b|\bfri(day)?\b|\bsat(urday)?\b|\bsun(day)?\b|\d\s*(am|pm)\b|\bat\s*\d|o'?clock|next\s+week/i.test(c)) return "schedule";
     return "schedule";
   };
-  const CATLABEL = {url:"URL", contact:"연락처", file:"파일", place:"장소", schedule:"일정"};
+  const CATLABEL = {url:"URL", contact:"Contact", file:"File", place:"Place", schedule:"Schedule"};
   const esc = s => (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const pad = n => String(n).padStart(2,"0");
   const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -786,18 +781,22 @@ const $ = s => document.querySelector(s);
   function parseWhen(text){
     const now=new Date(); let day=new Date(now); day.setHours(0,0,0,0);
     let hasDate=false, hasTime=false, h=null, min=0;
-    if(/모레/.test(text)){ day.setDate(day.getDate()+2); hasDate=true; }
-    else if(/내일/.test(text)){ day.setDate(day.getDate()+1); hasDate=true; }
-    else if(/오늘/.test(text)){ hasDate=true; }
-    const wd=["일","월","화","수","목","금","토"];
-    const wm=text.match(/([일월화수목금토])요일/);
-    if(wm){ let d=new Date(now); d.setHours(0,0,0,0); let add=(wd.indexOf(wm[1])-d.getDay()+7)%7; if(add===0) add=7; d.setDate(d.getDate()+add); day=d; hasDate=true; }
-    const md=text.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
-    if(md){ day=new Date(now); day.setMonth(+md[1]-1,+md[2]); day.setHours(0,0,0,0); hasDate=true; }
-    const tm=text.match(/(오전|오후|저녁|밤|아침)?\s*(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분)?/);
-    if(tm){ h=+tm[2]; min=tm[3]?+tm[3]:0; const mer=tm[1]; if((mer==="오후"||mer==="저녁"||mer==="밤")&&h<12) h+=12; if(mer==="오전"&&h===12) h=0; hasTime=true; }
-    const cm=text.match(/(\d{1,2}):(\d{2})/);
-    if(cm && !tm){ h=+cm[1]; min=+cm[2]; hasTime=true; }
+    const t=text.toLowerCase();
+    if(/day after tomorrow/.test(t)){ day.setDate(day.getDate()+2); hasDate=true; }
+    else if(/\btomorrow\b/.test(t)){ day.setDate(day.getDate()+1); hasDate=true; }
+    else if(/\btoday\b|\btonight\b/.test(t)){ hasDate=true; }
+    const wds={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
+    const wm=t.match(/\b(sun|mon|tue|wed|thu|fri|sat)[a-z]*\b/);
+    if(wm){ const target=wds[wm[1]]; let d=new Date(now); d.setHours(0,0,0,0); let add=(target-d.getDay()+7)%7; if(add===0) add=7; d.setDate(d.getDate()+add); day=d; hasDate=true; }
+    const months=["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+    const mo=t.match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})\b/);
+    if(mo){ day=new Date(now); day.setMonth(months.indexOf(mo[1]), +mo[2]); day.setHours(0,0,0,0); hasDate=true; }
+    const sl=text.match(/\b(\d{1,2})\/(\d{1,2})\b/);
+    if(sl && !mo){ day=new Date(now); day.setMonth(+sl[1]-1,+sl[2]); day.setHours(0,0,0,0); hasDate=true; }
+    let tm=t.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/);
+    if(tm){ h=+tm[1]%12; if(tm[3]==="pm") h+=12; min=tm[2]?+tm[2]:0; hasTime=true; }
+    else { const t24=t.match(/\b(\d{1,2}):(\d{2})\b/); if(t24){ h=+t24[1]; min=+t24[2]; hasTime=true; }
+      else { const at=t.match(/\bat\s+(\d{1,2})\b/); if(at){ h=+at[1]; min=0; hasTime=true; } } }
     if(!hasDate && !hasTime) return null;
     const d=new Date(day); if(hasTime) d.setHours(h,min,0,0);
     return {date:d, conf:(hasDate&&hasTime)?"high":"low"};
@@ -805,22 +804,22 @@ const $ = s => document.querySelector(s);
 
   const memos=[];
   const cmemo=$("#cmemo"), cstat=$("#cstat"), cmemosBox=$("#cmemos"), cex=$("#cex");
-  const EX=["내일 오후 6시 저녁 약속","금요일 3시 미용실 예약","010-1234-5678 김대리 번호","https://openai.com 나중에 읽기","발표자료.pdf 정리","강남역 2번 출구에서 만나기"];
-  EX.forEach(x=>{ const b=document.createElement("button"); b.className="chip"; b.type="button"; b.textContent=x.length>15?x.slice(0,14)+"…":x; b.title=x; b.addEventListener("click",()=>{ cmemo.value=x; save(); }); cex.appendChild(b); });
+  const EX=["dinner with team tomorrow 6pm","haircut appointment Friday 3pm","call John 555-123-4567","read https://openai.com later","review slides deck.pdf","meet at Gangnam station exit 2"];
+  EX.forEach(x=>{ const b=document.createElement("button"); b.className="chip"; b.type="button"; b.textContent=x.length>22?x.slice(0,21)+"…":x; b.title=x; b.addEventListener("click",()=>{ cmemo.value=x; save(); }); cex.appendChild(b); });
 
   function save(){
     const c=cmemo.value.trim(); if(!c) return;
     const cat=guessCategory(c);
     let when=null; if(cat==="schedule"){ const p=parseWhen(c); if(p && p.conf==="high") when=p.date; }
     memos.unshift({c, cat, when, id:Date.now()});
-    const persona = when ? `일정으로 잡았다, 삣삐. ${fmt(when)} 에 넣어뒀다.` : `[${CATLABEL[cat]}]로 분류했다, 삣삐. 기억해뒀다.`;
+    const persona = when ? `Scheduled — ${fmt(when)}. Locked in.` : `Filed under [${CATLABEL[cat]}]. Noted.`;
     cstat.innerHTML = `▸ ${esc(persona)}`;
     cmemo.value=""; renderMemos();
   }
   function renderMemos(){
     if(!memos.length){ cmemosBox.innerHTML=""; return; }
     cmemosBox.innerHTML = memos.slice(0,12).map(m=>{
-      const pill = m.when ? `<span class="pill open">일정 ${fmt(m.when)}</span>` : `<span class="pill always">${CATLABEL[m.cat]}</span>`;
+      const pill = m.when ? `<span class="pill open">Schedule ${fmt(m.when)}</span>` : `<span class="pill always">${CATLABEL[m.cat]}</span>`;
       return `<article class="sch"><div class="top"><div class="name">${esc(m.c)}</div>${pill}</div>
         <div class="facets"><span class="f">categoryId: ${m.cat}</span>${m.when?`<span class="f">meta.startAt ✓</span>`:""}</div></article>`;
     }).join("");
@@ -840,8 +839,8 @@ const $ = s => document.querySelector(s);
     const host=u.hostname.replace(/^\[|\]$/g,""); const lo=host.toLowerCase();
     if(lo==="localhost"||lo.endsWith(".localhost")||lo.endsWith(".local")||lo.endsWith(".internal")) return {ok:false, r:"blocked host: local"};
     const isIp = /^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.includes(":");
-    if(isIp){ if(isPrivateIp(host)) return {ok:false, r:"blocked private/loopback IP"}; return {ok:true, r:"공개 IP — 통과"}; }
-    return {ok:true, r:"공개 호스트명 — 통과 (서버에서 DNS 해석 후 각 홉 재검증)"};
+    if(isIp){ if(isPrivateIp(host)) return {ok:false, r:"blocked private/loopback IP"}; return {ok:true, r:"public IP — allowed"}; }
+    return {ok:true, r:"public hostname — allowed (server re-resolves DNS and re-checks each hop)"};
   }
   const curl=$("#curl"), cssrf=$("#cssrf"), curlex=$("#curlex");
   const URLEX=["http://169.254.169.254/latest/meta-data","http://localhost:8080","https://naver.com","ftp://example.com","http://192.168.0.1","https://github.com/Maroco0109"];
@@ -849,8 +848,8 @@ const $ = s => document.querySelector(s);
   function runSsrf(){
     const s=curl.value.trim(); if(!s) return; const v=checkUrl(s);
     cssrf.innerHTML = v.ok
-      ? `<span class="verdict ok">✓ ALLOW</span> — ${esc(v.r)}. 통과다, 삣삐.`
-      : `<span class="verdict no">✕ BLOCK</span> — ${esc(v.r)}. 차단했다, 삣삐.`;
+      ? `<span class="verdict ok">✓ ALLOW</span> — ${esc(v.r)}. Cleared.`
+      : `<span class="verdict no">✕ BLOCK</span> — ${esc(v.r)}. Denied.`;
   }
   curl.addEventListener("keydown", e=>{ if(e.key==="Enter") runSsrf(); });
 })();

@@ -437,11 +437,12 @@
     </div>
     <div class="cards">
       <div class="card">
-        <span class="kind">RAG · public data · read-only</span>
+        <span class="kind">Grounded search · public data · read-only</span>
         <h3>who-will-notify</h3>
         <p>An MCP server that contextualizes ~1,000 scholarship listings from Korea's public data portal and answers
           natural-language questions <b>with sources</b> — grounded strictly in real data, never fabricated.</p>
         <ul>
+          <li>Lightweight keyword + facet search — no embeddings, sized to a ~1,000-item corpus</li>
           <li>repo-as-DB + weekly GitHub Actions cron sync</li>
           <li>Safety gates: reject error envelopes · completeness check · size cap</li>
           <li><b>stale-serve fallback</b> baked into the image on fetch failure</li>
@@ -538,8 +539,8 @@
 <section id="demo">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">06 · Live Demo · RAG</span>
-      <h2>Scholarship search — the RAG data layer</h2>
+      <span class="eyebrow">06 · Live Demo · Search</span>
+      <h2>Scholarship search — the grounded data layer</h2>
       <p><b>who-will-notify</b> runs live on Kakao PlayMCP — you can ask it in natural language inside Kakao's AI chat.
         Below is a login-free preview that reproduces the search, <b>facet filters</b>, and status logic over a 90-item snapshot
         of the real public data (Korea Public Nuri type-1).</p>

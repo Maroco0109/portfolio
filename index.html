@@ -143,6 +143,10 @@
 
   .prose{color:var(--ink-2); max-width:68ch}
   .prose b{color:var(--ink)}
+  .pipe{margin:14px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px; max-width:76ch}
+  .pipe li{position:relative; padding-left:18px; font-size:14px; color:var(--ink-2)}
+  .pipe li::before{content:"\203A"; position:absolute; left:2px; color:var(--signal); font-family:var(--mono)}
+  .pipe b{color:var(--ink)}
 
   /* ---- flagship project ---- */
   .flag{border:1px solid var(--line); border-radius:16px; background:var(--surface); overflow:hidden}
@@ -410,10 +414,13 @@
           <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">3종 전부 시스템프롬프트·PII 0%</div></div>
         </div>
 
-        <p class="prose" style="margin-top:22px">데이터 기반은 팀과 함께 구축했습니다. 크롤링 <b>17,759건</b> + 공공기관 PDF —
-          병합셀 130페이지 표는 <b>Gemini Vision 1차 → 검증 → pdfplumber 재파싱 → 정규화</b> 4단계로 적재하고, 수동 수정까지
-          post_processing() 코드로 남겨 <b>재현 가능</b>하게 만들었습니다(최종 오류 0건). 법령은 조·항·호 구조 청킹, 별표는
-          부모–자식–손자 <b>계층 청킹</b>으로 조건 단위만 임베딩해 <b>신호 희석을 방지</b> — 최종 pgvector <b>40,285청크</b> · hybrid RRF 검색.</p>
+        <p class="prose" style="margin-top:22px">데이터 기반은 팀과 함께 구축했습니다 — 크롤링 <b>17,759건</b> + 공공기관 PDF,
+          최종 pgvector <b>40,285청크</b> · hybrid RRF 검색.</p>
+        <ul class="pipe">
+          <li><b>병합셀 130p 표 PDF</b> — Gemini Vision 1차 → 검증 → pdfplumber 재파싱 → 정규화 4단계 · 수동 수정까지 post_processing()으로 코드화 → 재현 가능, 최종 오류 0건</li>
+          <li><b>법령·시행령</b> — 조·항·호 구조 단위 청킹 + hierarchy_path 메타데이터</li>
+          <li><b>기준(별표)</b> — 부모–자식–손자 계층 청킹, 조건 단위만 임베딩 → 신호 희석 방지</li>
+        </ul>
 
         <p class="prose" style="margin-top:22px">측정 백본은 직접 구축했습니다. 요청 단위로 <b>DB 5테이블</b>(runs·steps·retrieval·llm_calls·guardrail)에
           적재해 A/B를 SQL로 비교하고, <b>Prometheus /metrics</b>(variant 라벨) + <b>Grafana 대시보드</b>로 p95 지연·에러율·가드레일 차단율을 실시간 관측했습니다.</p>

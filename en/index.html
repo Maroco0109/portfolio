@@ -138,6 +138,10 @@
 
   .prose{color:var(--ink-2); max-width:68ch}
   .prose b{color:var(--ink)}
+  .pipe{margin:14px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px; max-width:76ch}
+  .pipe li{position:relative; padding-left:18px; font-size:14px; color:var(--ink-2)}
+  .pipe li::before{content:"\203A"; position:absolute; left:2px; color:var(--signal); font-family:var(--mono)}
+  .pipe b{color:var(--ink)}
 
   .flag{border:1px solid var(--line); border-radius:16px; background:var(--surface); overflow:hidden}
   .flag .band{padding:24px 26px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, var(--surface-2), var(--surface))}
@@ -399,11 +403,13 @@
           <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">all 3 variants: system-prompt·PII 0%</div></div>
         </div>
 
-        <p class="prose" style="margin-top:22px">The data foundation was a team effort: <b>17,759 crawled cases</b> + public-agency PDFs —
-          130 pages of merged-cell tables loaded through a 4-stage pipeline (<b>Gemini Vision first pass → validation → pdfplumber re-parse → normalization</b>),
-          with even manual fixes codified in post_processing() for <b>reproducibility</b> (0 final errors). Statutes chunked by article/paragraph/item structure;
-          annex tables use parent–child–grandchild <b>hierarchical chunking</b>, embedding only condition-level chunks to <b>prevent signal dilution</b> —
+        <p class="prose" style="margin-top:22px">The data foundation was a team effort — <b>17,759 crawled cases</b> + public-agency PDFs,
           <b>40,285 chunks</b> in pgvector with hybrid RRF search.</p>
+        <ul class="pipe">
+          <li><b>130p merged-cell table PDFs</b> — 4-stage pipeline: Gemini Vision first pass → validation → pdfplumber re-parse → normalization · manual fixes codified in post_processing() → reproducible, 0 final errors</li>
+          <li><b>Statutes</b> — chunked by article/paragraph/item structure + hierarchy_path metadata</li>
+          <li><b>Resolution criteria (annexes)</b> — parent–child–grandchild hierarchical chunking, embedding only condition-level chunks → prevents signal dilution</li>
+        </ul>
 
         <p class="prose" style="margin-top:22px">I built the measurement backbone myself: per-request logging into <b>5 DB tables</b>
           (runs·steps·retrieval·llm_calls·guardrail) to compare A/B in SQL, plus <b>Prometheus /metrics</b> (variant labels)

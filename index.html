@@ -425,6 +425,12 @@
         <p class="prose" style="margin-top:22px">측정 백본은 직접 구축했습니다. 요청 단위로 <b>DB 5테이블</b>(runs·steps·retrieval·llm_calls·guardrail)에
           적재해 A/B를 SQL로 비교하고, <b>Prometheus /metrics</b>(variant 라벨) + <b>Grafana 대시보드</b>로 p95 지연·에러율·가드레일 차단율을 실시간 관측했습니다.</p>
 
+        <figure style="margin:18px 0 0;">
+          <img src="assets/grafana-drilldown.png" alt="Grafana run 드릴다운 대시보드 — run 단위 A/B 지연, 스텝 분해, retrieval·guardrail 이벤트" loading="lazy"
+               style="width:100%;border:1px solid var(--line);border-radius:10px;display:block;">
+          <figcaption style="font-size:12.5px;color:var(--faint);margin-top:8px;">실측 Grafana 드릴다운 (Layer 2 · M3 DB) — run 단위 A/B 지연 · 스텝 분해(guardrail → retrieval → generation) · LLM 호출·guardrail 이벤트, 2026-07 실데이터</figcaption>
+        </figure>
+
         <div class="tbl-scroll">
           <table class="cmp">
             <thead>

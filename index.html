@@ -327,8 +327,8 @@
       </div>
       <div class="cell">
         <div class="k"><span class="dot live"></span>응답 지연</div>
-        <div class="v">−80<small style="font-size:16px">%</small></div>
-        <div class="s">60s→10s · 규칙기반+병렬화</div>
+        <div class="v">10.2<small style="font-size:16px">s</small></div>
+        <div class="s">median 실측 · 규칙기반 라우팅 (모드별 60→5s / 80→20s)</div>
       </div>
       <div class="cell">
         <div class="k"><span class="dot live"></span>보안 누출</div>
@@ -403,7 +403,7 @@
           개인 심화에서 서로 다른 아키텍처를 <b>동일 조건에서 측정·모니터링하는 시스템</b>으로 발전시켜, 포트폴리오 가치를 숫자로 증명했습니다.</div>
 
         <div class="metric-grid">
-          <div class="metric up"><div class="k">응답 지연</div><div class="v">60s→10s</div><div class="d">에이전트 LLM추론→규칙기반 + Fan-out/in 병렬검색, −80%</div></div>
+          <div class="metric up"><div class="k">응답 지연</div><div class="v">median 10.2s</div><div class="d">규칙기반 라우팅 + Fan-out/in 병렬검색 — NO_RETRIEVAL 60→5s · NEED_RAG 80→20s (실측)</div></div>
           <div class="metric flat"><div class="k">nDCG@10 (A)</div><div class="v" data-count="0.88" data-dec="2">0.88</div><div class="d">B-frontier 0.71 / B-exaone 0.55</div></div>
           <div class="metric flat"><div class="k">safety pass (A)</div><div class="v" data-count="1.00" data-dec="2">1.00</div><div class="d">B-frontier 0.83 / B-exaone 0.78</div></div>
           <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">3종 전부 시스템프롬프트·PII 0%</div></div>

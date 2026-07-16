@@ -315,8 +315,8 @@
       </div>
       <div class="cell">
         <div class="k"><span class="dot live"></span>Latency</div>
-        <div class="v">−80<small style="font-size:16px">%</small></div>
-        <div class="s">60s→10s · rule-based + parallel</div>
+        <div class="v">10.2<small style="font-size:16px">s</small></div>
+        <div class="s">measured median · rule-based routing (60→5s / 80→20s by mode)</div>
       </div>
       <div class="cell">
         <div class="k"><span class="dot live"></span>Security leak</div>
@@ -392,7 +392,7 @@
           Solo, I turned it into a system that <b>measures and monitors different architectures under identical conditions</b> — proving portfolio value in numbers.</div>
 
         <div class="metric-grid">
-          <div class="metric up"><div class="k">Latency</div><div class="v">60s→10s</div><div class="d">agent LLM inference → rule-based + Fan-out/in retrieval, −80%</div></div>
+          <div class="metric up"><div class="k">Latency</div><div class="v">median 10.2s</div><div class="d">rule-based routing + Fan-out/in retrieval — NO_RETRIEVAL 60→5s · NEED_RAG 80→20s (measured)</div></div>
           <div class="metric flat"><div class="k">nDCG@10 (A)</div><div class="v" data-count="0.88" data-dec="2">0.88</div><div class="d">B-frontier 0.71 / B-exaone 0.55</div></div>
           <div class="metric flat"><div class="k">safety pass (A)</div><div class="v" data-count="1.00" data-dec="2">1.00</div><div class="d">B-frontier 0.83 / B-exaone 0.78</div></div>
           <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">all 3 variants: system-prompt·PII 0%</div></div>

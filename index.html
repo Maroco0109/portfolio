@@ -265,8 +265,8 @@
     display:flex; justify-content:space-between; align-items:center; background:var(--surface); transition:.15s;
   }
   .contact a:hover{border-color:var(--signal)}
-  .contact .l{font-family:var(--mono); font-size:11px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em}
-  .contact .v{font-weight:700; margin-top:4px; font-size:15px}
+  .contact .l{display:block; font-family:var(--mono); font-size:11px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em}
+  .contact .v{display:block; font-weight:700; margin-top:4px; font-size:15px}
   .contact .arw{color:var(--signal); font-family:var(--mono)}
 
   footer{border-top:1px solid var(--line); padding:34px 0 60px; color:var(--faint); font-family:var(--mono); font-size:12px}
@@ -409,6 +409,11 @@
           <div class="metric flat"><div class="k">safety pass (A)</div><div class="v" data-count="1.00" data-dec="2">1.00</div><div class="d">B-frontier 0.83 / B-exaone 0.78</div></div>
           <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">3종 전부 시스템프롬프트·PII 0%</div></div>
         </div>
+
+        <p class="prose" style="margin-top:22px">데이터 기반은 팀과 함께 구축했습니다. 크롤링 <b>17,759건</b> + 공공기관 PDF —
+          병합셀 130페이지 표는 <b>Gemini Vision 1차 → 검증 → pdfplumber 재파싱 → 정규화</b> 4단계로 적재하고, 수동 수정까지
+          post_processing() 코드로 남겨 <b>재현 가능</b>하게 만들었습니다(최종 오류 0건). 법령은 조·항·호 구조 청킹, 별표는
+          부모–자식–손자 <b>계층 청킹</b>으로 조건 단위만 임베딩해 <b>신호 희석을 방지</b> — 최종 pgvector <b>40,285청크</b> · hybrid RRF 검색.</p>
 
         <p class="prose" style="margin-top:22px">측정 백본은 직접 구축했습니다. 요청 단위로 <b>DB 5테이블</b>(runs·steps·retrieval·llm_calls·guardrail)에
           적재해 A/B를 SQL로 비교하고, <b>Prometheus /metrics</b>(variant 라벨) + <b>Grafana 대시보드</b>로 p95 지연·에러율·가드레일 차단율을 실시간 관측했습니다.</p>

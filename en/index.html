@@ -253,8 +253,8 @@
     display:flex; justify-content:space-between; align-items:center; background:var(--surface); transition:.15s;
   }
   .contact a:hover{border-color:var(--signal)}
-  .contact .l{font-family:var(--mono); font-size:11px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em}
-  .contact .v{font-weight:700; margin-top:4px; font-size:15px}
+  .contact .l{display:block; font-family:var(--mono); font-size:11px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em}
+  .contact .v{display:block; font-weight:700; margin-top:4px; font-size:15px}
   .contact .arw{color:var(--signal); font-family:var(--mono)}
 
   footer{border-top:1px solid var(--line); padding:34px 0 60px; color:var(--faint); font-family:var(--mono); font-size:12px}
@@ -398,6 +398,12 @@
           <div class="metric flat"><div class="k">safety pass (A)</div><div class="v" data-count="1.00" data-dec="2">1.00</div><div class="d">B-frontier 0.83 / B-exaone 0.78</div></div>
           <div class="metric up"><div class="k">leak_rate</div><div class="v" data-count="0" data-dec="0" data-suffix="%">0%</div><div class="d">all 3 variants: system-prompt·PII 0%</div></div>
         </div>
+
+        <p class="prose" style="margin-top:22px">The data foundation was a team effort: <b>17,759 crawled cases</b> + public-agency PDFs —
+          130 pages of merged-cell tables loaded through a 4-stage pipeline (<b>Gemini Vision first pass → validation → pdfplumber re-parse → normalization</b>),
+          with even manual fixes codified in post_processing() for <b>reproducibility</b> (0 final errors). Statutes chunked by article/paragraph/item structure;
+          annex tables use parent–child–grandchild <b>hierarchical chunking</b>, embedding only condition-level chunks to <b>prevent signal dilution</b> —
+          <b>40,285 chunks</b> in pgvector with hybrid RRF search.</p>
 
         <p class="prose" style="margin-top:22px">I built the measurement backbone myself: per-request logging into <b>5 DB tables</b>
           (runs·steps·retrieval·llm_calls·guardrail) to compare A/B in SQL, plus <b>Prometheus /metrics</b> (variant labels)
